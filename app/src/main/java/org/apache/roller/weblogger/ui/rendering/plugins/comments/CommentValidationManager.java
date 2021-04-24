@@ -33,7 +33,7 @@ import org.apache.roller.weblogger.util.Utilities;
  */
 public class CommentValidationManager {
     private static Log log = LogFactory.getLog(CommentValidationManager.class);
-    private List<CommentValidator> validators = new ArrayList<CommentValidator>();
+    private List<CommentValidator> validators = new ArrayList<>();
 
     public CommentValidationManager() {
         
@@ -76,7 +76,7 @@ public class CommentValidationManager {
      */
     public int validateComment(WeblogEntryComment comment, RollerMessages messages) {
         int total = 0;
-        if (validators.size() > 0) {
+        if (!validators.isEmpty()) {
             for (CommentValidator val : validators) {
                 log.debug("Invoking comment validator "+val.getName());
                 total += val.validate(comment, messages);

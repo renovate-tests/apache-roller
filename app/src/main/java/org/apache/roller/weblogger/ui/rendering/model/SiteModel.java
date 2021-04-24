@@ -33,6 +33,7 @@ import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.business.UserManager;
 import org.apache.roller.weblogger.business.WeblogEntryManager;
+import org.apache.roller.weblogger.business.jpa.JPAWeblogEntryManagerImpl;
 import org.apache.roller.weblogger.pojos.TagStat;
 import org.apache.roller.weblogger.pojos.WeblogHitCount;
 import org.apache.roller.weblogger.pojos.StatCount;
@@ -71,10 +72,12 @@ public class SiteModel implements Model {
     private URLStrategy urlStrategy = null;
     
     
+    @Override
     public String getModelName() {
         return "site";
     }
     
+    @Override
     public void init(Map initData) throws WebloggerException {
         
         // we expect the init data to contain a weblogRequest object
@@ -388,11 +391,8 @@ public class SiteModel implements Model {
      * @param len      Max number of results to return
      */
     public List<WeblogWrapper> getNewWeblogs(int sinceDays, int length) {
-        List<WeblogWrapper> results = new ArrayList<WeblogWrapper>();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DATE, -1 * sinceDays);
-        Date startDate = cal.getTime();
+        List<WeblogWrapper> results = new ArrayList<>();
+        Date startDate = JPAWeblogEntryManagerImpl.getStartDateNow(sinceDays);
         try {            
             List<Weblog> weblogs = WebloggerFactory.getWeblogger().getWeblogManager().getWeblogs(
                 Boolean.TRUE, Boolean.TRUE, startDate, null, 0, length);
@@ -412,7 +412,7 @@ public class SiteModel implements Model {
      * @param len      Max number of results to return
      */
     public List<UserWrapper> getNewUsers(int sinceDays, int length) {
-        List<UserWrapper> results = new ArrayList<UserWrapper>();
+        List<UserWrapper> results = new ArrayList<>();
         try {            
             Weblogger roller = WebloggerFactory.getWeblogger();
             UserManager umgr = roller.getUserManager();
@@ -434,7 +434,7 @@ public class SiteModel implements Model {
      */
     public List<StatCount> getHotWeblogs(int sinceDays, int length) {
         
-        List<StatCount> results = new ArrayList<StatCount>();
+        List<StatCount> results = new ArrayList<>();
         try {
             WeblogEntryManager mgr = WebloggerFactory.getWeblogger().getWeblogEntryManager();
             List<WeblogHitCount> hotBlogs = mgr.getHotWeblogs(sinceDays, 0, length);
@@ -466,10 +466,7 @@ public class SiteModel implements Model {
      */
     public List getMostCommentedWeblogs(int sinceDays , int length) {
         List results = new ArrayList();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DATE, -1 * sinceDays);
-        Date startDate = cal.getTime();
+        Date startDate = JPAWeblogEntryManagerImpl.getStartDateNow(sinceDays);
         try {            
             results = WebloggerFactory.getWeblogger().getWeblogManager().getMostCommentedWeblogs(
                     startDate, new Date(), 0, length);
@@ -490,10 +487,7 @@ public class SiteModel implements Model {
     public List getMostCommentedWeblogEntries(
             List cats, int sinceDays, int length) {
         List results = new ArrayList();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DATE, -1 * sinceDays);
-        Date startDate = cal.getTime();
+        Date startDate = JPAWeblogEntryManagerImpl.getStartDateNow(sinceDays);
         try {            
             Weblogger roller = WebloggerFactory.getWeblogger();
             WeblogEntryManager wmgr = roller.getWeblogEntryManager();
@@ -510,7 +504,7 @@ public class SiteModel implements Model {
      * @param length    Max number of results to return
      */
     public List<WeblogEntryWrapper> getPinnedWeblogEntries(int length) {
-        List<WeblogEntryWrapper> results = new ArrayList<WeblogEntryWrapper>();
+        List<WeblogEntryWrapper> results = new ArrayList<>();
         try {            
             Weblogger roller = WebloggerFactory.getWeblogger();
             WeblogEntryManager wmgr = roller.getWeblogEntryManager();

@@ -22,20 +22,16 @@ a {
     font-weight: normal;
     text-decoration: underline;
 }
-a:active {}
-a:link {}
-a:visited {}
-a:hover {}
 body {
     font-family: verdana, sans-serif;
     font-size: small;
 }
 p {
-    margin:10px 10px 10px 10px;
+    margin:10px;
     text-align: left;
 }
 pre {
-    margin:0px 10px 0px 10px;
+    margin:0px 10px;
     overflow: auto;
 }
 .code {
@@ -49,7 +45,7 @@ pre {
 }
 img {
     border: 0px;
-    margin: 0px; 
+    margin: 0px;
 }
 
 /* bookmark.vm */
@@ -126,7 +122,7 @@ a.entrycommentslink {
 }
 /* master containing div or ul */
 .comments {
-  margin: 10px 5px 10px 5px;
+  margin: 10px 5px;
 }
 /* Preview / Comments Header */
 div.comments-head {
@@ -136,7 +132,7 @@ div.comments-head {
 }
 /* actual comment content */
 .comment {
-    margin: 5px 10px 10px 5px; 
+    margin: 5px 10px 10px 5px;
 }
 /* commenter info */
 p.comment-details {
@@ -146,7 +142,7 @@ p.comment-details {
 }
 div.comments-form {
   font-weight:normal;
-  margin: 15px 15px 15px 15px;
+  margin: 15px;
 }
 span.comments-syntax-indicator {
     display: block;
@@ -194,8 +190,6 @@ textarea.commentFormTextarea {
     color: red;
     font-style: italic;
 }
-div.commentBody {}
-div.commentByline {}
 div.commentAuthor {
     border: none;
 }
@@ -213,8 +207,6 @@ span.disabled {
 }
 span.enabled {
     color: green;
-}
-form#searchForm {
 }
 div#searchAgain {
   border: 1px solid #999;
@@ -251,7 +243,7 @@ li.linkblog {
 }
 .next-previous {
     text-align: center;
-    padding: 1em 0 1em 0;
+    padding: 1em 0;
 }
 .error {
     display: block;
@@ -299,8 +291,6 @@ table.hCalendarTable {
 td.hCalendarMonthYearRow {
     font-weight: bold;
 }
-a.hCalendarNavBar {
-}
 th.hCalendarDayNameRow {
     text-align : center;
     font-size : x-small;
@@ -334,14 +324,14 @@ td.hCalendarDay {
     font-size : x-small;
 }
 
-/* BigWeblogCalendarModel */ 
+/* BigWeblogCalendarModel */
 
 div.hCalendarDayTitleBig {
   position: relative;
   left: 0;
   top: 0;
   width: 25%;
-  padding: 3px 0 3px 0;
+  padding: 3px 0px;
   background: transparent;
   color: #050505;
   border-right: 1px solid #050505;
@@ -352,6 +342,6 @@ div.hCalendarDayTitleBig {
 }
 div.bCalendarDayContentBig {
   font-size: x-small;
-  padding: 3px 0px 3px 0px;
+  padding: 3px 0px;
 }
 

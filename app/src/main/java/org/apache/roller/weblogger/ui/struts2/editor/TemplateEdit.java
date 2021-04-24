@@ -27,6 +27,7 @@ import org.apache.roller.weblogger.pojos.TemplateRendition.TemplateLanguage;
 import org.apache.roller.weblogger.pojos.WeblogTemplate;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 import java.util.Date;
@@ -37,6 +38,7 @@ import java.util.Map;
 /**
  * Action which handles editing for a single WeblogTemplate.
  */
+// TODO: make this work @AllowedMethods({"execute","move"})
 public class TemplateEdit extends UIAction {
 
     private static Log log = LogFactory.getLog(TemplateEdit.class);
@@ -53,6 +55,7 @@ public class TemplateEdit extends UIAction {
         this.pageTitle = "pagesForm.title";
     }
 
+    @Override
     public void myPrepare() {
         try {
             setTemplate(WebloggerFactory.getWeblogger().getWeblogManager().getTemplate(getBean().getId()));
@@ -66,6 +69,7 @@ public class TemplateEdit extends UIAction {
      * Show template edit page.
      */
     @SkipValidation
+    @Override
     public String execute() {
         try {
             if (getTemplate() == null) {
@@ -112,8 +116,7 @@ public class TemplateEdit extends UIAction {
                 getBean().copyTo(templateToSave);
                 templateToSave.setLastModified(new Date());
 
-                if (getBean().getAutoContentType() == null ||
-                        !getBean().getAutoContentType()) {
+                if (getBean().getAutoContentType() == null || !getBean().getAutoContentType()) {
                     templateToSave.setOutputContentType(getBean().getManualContentType());
                 } else {
                     // empty content-type indicates that template uses auto content-type detection
@@ -149,7 +152,7 @@ public class TemplateEdit extends UIAction {
         if (!getTemplate().getName().equals(getBean().getName())) {
             try {
                 if (WebloggerFactory.getWeblogger().getWeblogManager()
-                    .getTemplateByName(getActionWeblog(), getBean().getName()) != null) {
+                        .getTemplateByName(getActionWeblog(), getBean().getName()) != null) {
                     addError("pagesForm.error.alreadyExists", getBean().getName());
                 }
             } catch (WebloggerException ex) {
@@ -172,7 +175,7 @@ public class TemplateEdit extends UIAction {
     }
 
     public Map<TemplateLanguage, String> getTemplateLanguages() {
-        Map<TemplateLanguage, String> langMap = new EnumMap<TemplateLanguage, String>(TemplateLanguage.class);
+        Map<TemplateLanguage, String> langMap = new EnumMap<>(TemplateLanguage.class);
         for (TemplateLanguage lang : TemplateLanguage.values()) {
             langMap.put(lang, lang.getReadableName());
         }

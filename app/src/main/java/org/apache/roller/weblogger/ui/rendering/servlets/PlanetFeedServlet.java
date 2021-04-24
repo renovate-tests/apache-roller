@@ -60,6 +60,7 @@ public class PlanetFeedServlet extends HttpServlet {
     /**
      * Init method for this servlet
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
         super.init(servletConfig);
@@ -72,6 +73,7 @@ public class PlanetFeedServlet extends HttpServlet {
     /**
      * Handle GET requests for weblog pages.
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -128,7 +130,7 @@ public class PlanetFeedServlet extends HttpServlet {
         }
 
         // looks like we need to render content
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        HashMap<String, Object> model = new HashMap<>();
         try {
 
             // populate the rendering model

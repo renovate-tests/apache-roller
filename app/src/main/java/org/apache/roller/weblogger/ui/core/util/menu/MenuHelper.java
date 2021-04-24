@@ -54,10 +54,10 @@ public final class MenuHelper {
 
     private static Log log = LogFactory.getLog(MenuHelper.class);
 
-    private static Map<String, ParsedMenu> menus = new HashMap<String, ParsedMenu>();
+    private static Map<String, ParsedMenu> menus = new HashMap<>();
 
     // menu, menuName, tabName action/subaction check
-    private static Map<String, HashMap<String, HashSet<String>>> itemMenu = new HashMap<String, HashMap<String, HashSet<String>>>();
+    private static Map<String, HashMap<String, HashSet<String>>> itemMenu = new HashMap<>();
 
     private MenuHelper() {
     }
@@ -67,17 +67,13 @@ public final class MenuHelper {
 
             // parse menus and cache so we can efficiently reuse them
             String menu = "editor";
-            ParsedMenu editorMenu = unmarshall(
-                    menu,
-                    MenuHelper.class
-                            .getResourceAsStream("/org/apache/roller/weblogger/ui/struts2/editor/editor-menu.xml"));
+            ParsedMenu editorMenu = unmarshall( menu,
+                MenuHelper.class.getResourceAsStream("/org/apache/roller/weblogger/ui/struts2/editor/editor-menu.xml"));
             menus.put(menu, editorMenu);
 
             menu = "admin";
-            ParsedMenu adminMenu = unmarshall(
-                    menu,
-                    MenuHelper.class
-                            .getResourceAsStream("/org/apache/roller/weblogger/ui/struts2/admin/admin-menu.xml"));
+            ParsedMenu adminMenu = unmarshall( menu,
+                MenuHelper.class.getResourceAsStream("/org/apache/roller/weblogger/ui/struts2/admin/admin-menu.xml"));
             menus.put(menu, adminMenu);
 
         } catch (Exception ex) {
@@ -112,8 +108,7 @@ public final class MenuHelper {
         ParsedMenu menuConfig = menus.get(menuId);
         if (menuConfig != null) {
             try {
-                menu = buildMenu(menuId, menuConfig, currentAction, user,
-                        weblog);
+                menu = buildMenu(menuId, menuConfig, currentAction, user, weblog);
             } catch (WebloggerException ex) {
                 log.error("ERROR: fethcing user roles", ex);
             }
@@ -167,16 +162,14 @@ public final class MenuHelper {
             if (configTab.getEnabledProperty() != null) {
                 includeTab = getBooleanProperty(configTab.getEnabledProperty());
             } else if (configTab.getDisabledProperty() != null) {
-                includeTab = !getBooleanProperty(configTab
-                        .getDisabledProperty());
+                includeTab = !getBooleanProperty(configTab.getDisabledProperty());
             }
 
             // user roles check
             if (includeTab && configTab.getGlobalPermissionActions() != null
                     && !configTab.getGlobalPermissionActions().isEmpty()) {
                 try {
-                    GlobalPermission perm = new GlobalPermission(
-                            configTab.getGlobalPermissionActions());
+                    GlobalPermission perm = new GlobalPermission( configTab.getGlobalPermissionActions());
                     if (!umgr.checkPermission(perm, user)) {
                         includeTab = false;
                     }
@@ -189,8 +182,7 @@ public final class MenuHelper {
             // weblog permissions check
             if (includeTab && configTab.getWeblogPermissionActions() != null
                     && !configTab.getWeblogPermissionActions().isEmpty()) {
-                WeblogPermission perm = new WeblogPermission(weblog,
-                        configTab.getWeblogPermissionActions());
+                WeblogPermission perm = new WeblogPermission(weblog, configTab.getWeblogPermissionActions());
                 includeTab = umgr.checkPermission(perm, user);
             }
 
@@ -211,18 +203,15 @@ public final class MenuHelper {
                     boolean includeItem = true;
 
                     if (configTabItem.getEnabledProperty() != null) {
-                        includeItem = getBooleanProperty(configTabItem
-                                .getEnabledProperty());
+                        includeItem = getBooleanProperty(configTabItem.getEnabledProperty());
                     } else if (configTabItem.getDisabledProperty() != null) {
-                        includeItem = !getBooleanProperty(configTabItem
-                                .getDisabledProperty());
+                        includeItem = !getBooleanProperty(configTabItem.getDisabledProperty());
                     }
 
                     // user roles check
                     if (includeItem
                             && configTabItem.getGlobalPermissionActions() != null
-                            && !configTabItem.getGlobalPermissionActions()
-                                    .isEmpty()) {
+                            && !configTabItem.getGlobalPermissionActions() .isEmpty()) {
                         GlobalPermission perm = new GlobalPermission(
                                 configTabItem.getGlobalPermissionActions());
                         if (!umgr.checkPermission(perm, user)) {
@@ -233,10 +222,8 @@ public final class MenuHelper {
                     // weblog permissions check
                     if (includeItem
                             && configTabItem.getWeblogPermissionActions() != null
-                            && !configTabItem.getWeblogPermissionActions()
-                                    .isEmpty()) {
-                        WeblogPermission perm = new WeblogPermission(weblog,
-                                configTabItem.getWeblogPermissionActions());
+                            && !configTabItem.getWeblogPermissionActions().isEmpty()) {
+                        WeblogPermission perm = new WeblogPermission(weblog, configTabItem.getWeblogPermissionActions());
                         includeItem = umgr.checkPermission(perm, user);
                     }
 
@@ -388,7 +375,7 @@ public final class MenuHelper {
         // Build our tab action relation
         HashMap<String, HashSet<String>> menu = itemMenu.get(menuId);
         if (menu == null) {
-            menu = new HashMap<String, HashSet<String>>();
+            menu = new HashMap<>();
         }
 
         for (Element e : menuItems) {
@@ -401,7 +388,7 @@ public final class MenuHelper {
                     item.add(tabItem.getAction());
                 }
             } else {
-                item = new HashSet<String>();
+                item = new HashSet<>();
                 item.add(tabItem.getAction());
             }
 
@@ -445,7 +432,7 @@ public final class MenuHelper {
 
         String subActions = element.getAttributeValue("subactions");
         if (subActions != null) {
-            Set<String> set = new HashSet<String>();
+            Set<String> set = new HashSet<>();
             for (String string : Utilities.stringToStringList(subActions, ",")) {
                 set.add(string);
             }
@@ -461,8 +448,7 @@ public final class MenuHelper {
                     element.getAttributeValue("globalPerms"), ","));
         }
         tabItem.setEnabledProperty(element.getAttributeValue("enabledProperty"));
-        tabItem.setDisabledProperty(element
-                .getAttributeValue("disabledProperty"));
+        tabItem.setDisabledProperty(element.getAttributeValue("disabledProperty"));
 
         return tabItem;
     }

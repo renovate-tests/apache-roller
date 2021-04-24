@@ -32,11 +32,13 @@ import org.apache.roller.weblogger.pojos.WeblogCategory;
 import org.apache.roller.weblogger.pojos.WeblogPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 
 /**
  * Remove a category.
  */
+// TODO: make this work @AllowedMethods({"execute","remove","cancel"})
 public class CategoryRemove extends UIAction {
     
     private static Log log = LogFactory.getLog(CategoryRemove.class);
@@ -51,7 +53,7 @@ public class CategoryRemove extends UIAction {
     private String targetCategoryId = null;
 
     // all categories from the action weblog
-    private List<WeblogCategory> allCategories = new ArrayList<WeblogCategory>();
+    private List<WeblogCategory> allCategories = new ArrayList<>();
     
     
     public CategoryRemove() {
@@ -66,6 +68,7 @@ public class CategoryRemove extends UIAction {
     }
     
     
+    @Override
     public void myPrepare() {
         try {
             WeblogEntryManager wmgr = WebloggerFactory.getWeblogger().getWeblogEntryManager();
@@ -81,6 +84,7 @@ public class CategoryRemove extends UIAction {
     /**
      * Display the remove template confirmation.
      */
+    @Override
     public String execute() {
         try {
             // Build list of categories that the removed category's blog entries (if any) can be moved to
@@ -134,6 +138,7 @@ public class CategoryRemove extends UIAction {
      * 
      * @return the string
      */
+    @Override
     public String cancel() {
         return CANCEL;
     }

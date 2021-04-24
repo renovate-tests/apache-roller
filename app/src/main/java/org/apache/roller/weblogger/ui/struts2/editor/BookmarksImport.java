@@ -31,11 +31,13 @@ import org.apache.roller.weblogger.business.BookmarkManager;
 import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 
 /**
  * Import opml file into bookmarks folder.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public final class BookmarksImport extends UIAction {
     
     private static Log log = LogFactory.getLog(BookmarksImport.class);
@@ -63,6 +65,7 @@ public final class BookmarksImport extends UIAction {
     /**
      * Request to import bookmarks
      */
+    @Override
     public String execute() {
         return INPUT;
     }

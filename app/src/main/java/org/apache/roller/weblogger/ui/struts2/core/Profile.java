@@ -34,6 +34,7 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 /**
  * Allows user to edit his/her profile.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class Profile extends UIAction {
     private static Log log = LogFactory.getLog(Profile.class);
     
@@ -46,12 +47,14 @@ public class Profile extends UIAction {
     
     
     // override default security, we do not require an action weblog
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
 
 
     @SkipValidation
+    @Override
     public String execute() {
         User ud = getAuthenticatedUser();
         // load up the form from the users existing profile data
@@ -101,21 +104,13 @@ public class Profile extends UIAction {
             if (authMethod.equals(AuthMethod.OPENID) ||
                     (authMethod.equals(AuthMethod.DB_OPENID) && !StringUtils.isEmpty(bean.getOpenIdUrl()))) {
                 String randomString = RandomStringUtils.randomAlphanumeric(255);
-                try {
-                    existingUser.resetPassword(randomString);
-                } catch (WebloggerException e) {
-                    addMessage("yourProfile.passwordResetError");
-                }
+                existingUser.resetPassword(randomString);
             }
 
             // If user set both password and passwordConfirm then reset password
             if (!StringUtils.isEmpty(getBean().getPasswordText()) &&
                     !StringUtils.isEmpty(getBean().getPasswordConfirm())) {
-                try {
-                    existingUser.resetPassword(getBean().getPasswordText());
-                } catch (WebloggerException e) {
-                    addMessage("yourProfile.passwordResetError");
-                }
+                existingUser.resetPassword(getBean().getPasswordText());
             }
 
             try {

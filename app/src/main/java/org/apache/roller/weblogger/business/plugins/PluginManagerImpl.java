@@ -42,10 +42,10 @@ public class PluginManagerImpl implements PluginManager {
     private static Log log = LogFactory.getLog(PluginManagerImpl.class);
     
     // Plugin classes keyed by plugin name
-    static Map<String, Class> mPagePlugins = new LinkedHashMap<String, Class>();
+    static Map<String, Class> mPagePlugins = new LinkedHashMap<>();
     
     // Comment plugins
-    private List<WeblogEntryCommentPlugin> commentPlugins = new ArrayList<WeblogEntryCommentPlugin>();
+    private List<WeblogEntryCommentPlugin> commentPlugins = new ArrayList<>();
     
     
     /**
@@ -60,17 +60,19 @@ public class PluginManagerImpl implements PluginManager {
     }
     
     
+    @Override
     public boolean hasPagePlugins() {
         log.debug("mPluginClasses.size(): " + mPagePlugins.size());
-        return (mPagePlugins != null && mPagePlugins.size() > 0);
+        return mPagePlugins != null && !mPagePlugins.isEmpty();
     }
     
     
     /**
      * Create and init plugins for processing entries in a specified website.
      */
+    @Override
     public Map<String, WeblogEntryPlugin> getWeblogEntryPlugins(Weblog website) {
-        Map<String, WeblogEntryPlugin> ret = new LinkedHashMap<String, WeblogEntryPlugin>();
+        Map<String, WeblogEntryPlugin> ret = new LinkedHashMap<>();
         for (Class pluginClass : PluginManagerImpl.mPagePlugins.values()) {
             try {
                 WeblogEntryPlugin plugin = (WeblogEntryPlugin)pluginClass.newInstance();
@@ -83,6 +85,7 @@ public class PluginManagerImpl implements PluginManager {
         return ret;
     }
     
+    @Override
     public String applyWeblogEntryPlugins(Map pagePlugins, WeblogEntry entry, String str) {
 
         String ret = str;
@@ -107,6 +110,7 @@ public class PluginManagerImpl implements PluginManager {
     /**
      * @inheritDoc
      */
+    @Override
     public List<WeblogEntryCommentPlugin> getCommentPlugins() {
         return commentPlugins;
     }
@@ -115,6 +119,7 @@ public class PluginManagerImpl implements PluginManager {
     /**
      * @inheritDoc
      */
+    @Override
     public String applyCommentPlugins(WeblogEntryComment comment, String text) {
         
         if(comment == null || text == null) {
@@ -123,7 +128,7 @@ public class PluginManagerImpl implements PluginManager {
         
         String content = text;
         
-        if (commentPlugins.size() > 0) {
+        if (!commentPlugins.isEmpty()) {
             for (WeblogEntryCommentPlugin plugin : commentPlugins) {
                 if(comment.getPlugins() != null &&
                         comment.getPlugins().contains(plugin.getId())) {
@@ -228,6 +233,7 @@ public class PluginManagerImpl implements PluginManager {
     }
     
     
+    @Override
     public void release() {
         // no op
     }

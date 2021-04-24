@@ -46,7 +46,7 @@ import org.apache.roller.weblogger.ui.rendering.util.WeblogEntryCommentForm;
 import org.apache.roller.weblogger.ui.rendering.util.WeblogPageRequest;
 import org.apache.roller.weblogger.ui.rendering.util.cache.SiteWideCache;
 import org.apache.roller.weblogger.ui.rendering.util.cache.WeblogPageCache;
-import org.apache.roller.weblogger.util.BlacklistChecker;
+import org.apache.roller.weblogger.util.BannedwordslistChecker;
 import org.apache.roller.weblogger.util.I18nMessages;
 import org.apache.roller.weblogger.util.cache.CachedContent;
 
@@ -83,6 +83,7 @@ public class PageServlet extends HttpServlet {
     /**
      * Init method for this servlet
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
         super.init(servletConfig);
@@ -100,7 +101,7 @@ public class PageServlet extends HttpServlet {
 
         // see if built-in referrer spam check is enabled
         this.processReferrers = WebloggerConfig
-                .getBooleanProperty("site.blacklist.enable.referrers");
+                .getBooleanProperty("site.bannedwordslist.enable.referrers");
 
         log.info("Referrer spam check enabled = " + this.processReferrers);
 
@@ -128,6 +129,7 @@ public class PageServlet extends HttpServlet {
     /**
      * Handle GET requests for weblog pages.
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -379,8 +381,7 @@ public class PageServlet extends HttpServlet {
             if (pageRequest.getWeblogCategory() == null) {
                 invalid = true;
             }
-        } else if (pageRequest.getTags() != null
-                && pageRequest.getTags().size() > 0) {
+        } else if (pageRequest.getTags() != null && !pageRequest.getTags().isEmpty()) {
 
             try {
                 // tags specified. make sure they exist.
@@ -420,17 +421,22 @@ public class PageServlet extends HttpServlet {
         if (StringUtils.isNotEmpty(page.getOutputContentType())) {
             contentType = page.getOutputContentType() + "; charset=utf-8";
         } else {
-            String mimeType = RollerContext.getServletContext().getMimeType(
-                    page.getLink());
-            if (mimeType != null) {
-                // we found a match ... set the content deviceType
-                contentType = mimeType + "; charset=utf-8";
+            final String defaultContentType = "text/html; charset=utf-8";
+            if (page.getLink() == null) {
+                contentType = defaultContentType;
             } else {
-                contentType = "text/html; charset=utf-8";
+                String mimeType = RollerContext.getServletContext().getMimeType(
+                        page.getLink());
+                if (mimeType != null) {
+                    // we found a match ... set the content deviceType
+                    contentType = mimeType + "; charset=utf-8";
+                } else {
+                    contentType = defaultContentType;
+                }
             }
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        HashMap<String, Object> model = new HashMap<>();
         try {
             PageContext pageContext = JspFactory.getDefaultFactory()
                     .getPageContext(this, request, response, "", false,
@@ -440,7 +446,7 @@ public class PageServlet extends HttpServlet {
             request.setAttribute("pageRequest", pageRequest);
 
             // populate the rendering model
-            Map<String, Object> initData = new HashMap<String, Object>();
+            Map<String, Object> initData = new HashMap<>();
             initData.put("requestParameters", request.getParameterMap());
             initData.put("parsedRequest", pageRequest);
             initData.put("pageContext", pageContext);
@@ -548,6 +554,7 @@ public class PageServlet extends HttpServlet {
      * want to revisit this approach in the future and see if we can do this in
      * a different way, but for now this is the easy way.
      */
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -650,7 +657,7 @@ public class PageServlet extends HttpServlet {
                     String requestSite = requestUrl.substring(0, lastSlash);
 
                     if (!referrerUrl.matches(requestSite + ".*\\.rol.*") &&
-                            BlacklistChecker.checkReferrer(pageRequest.getWeblog(), referrerUrl)) {
+                            BannedwordslistChecker.checkReferrer(pageRequest.getWeblog(), referrerUrl)) {
                         return true;
                     }
                 }

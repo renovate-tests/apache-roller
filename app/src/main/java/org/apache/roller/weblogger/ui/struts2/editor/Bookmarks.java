@@ -32,11 +32,13 @@ import org.apache.roller.weblogger.pojos.WeblogBookmark;
 import org.apache.roller.weblogger.pojos.WeblogBookmarkFolder;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 /**
  * List bookmarks and folders and allow for moving them around and deleting them.
  */
+// TODO: make this work @AllowedMethods({"execute","delete","deleteFolder","move","view","folderCreated"})
 public class Bookmarks extends UIAction {
 
     private static Log log = LogFactory.getLog(Bookmarks.class);
@@ -65,10 +67,10 @@ public class Bookmarks extends UIAction {
         this.pageTitle = "bookmarksForm.rootTitle";
     }
 
+    @Override
     public void myPrepare() {
         try {
-            BookmarkManager bmgr = WebloggerFactory.getWeblogger()
-                    .getBookmarkManager();
+            BookmarkManager bmgr = WebloggerFactory.getWeblogger().getBookmarkManager();
             if (!StringUtils.isEmpty(getFolderId())) {
                 setFolder(bmgr.getFolder(getFolderId()));
             } else {
@@ -85,10 +87,11 @@ public class Bookmarks extends UIAction {
     /**
      * Present the bookmarks available in the folder specified by the request.
      */
+    @Override
     public String execute() {
 
         // build list of folders that the user can navigate to
-        List<WeblogBookmarkFolder> newFolders = new ArrayList<WeblogBookmarkFolder>();
+        List<WeblogBookmarkFolder> newFolders = new ArrayList<>();
 
         try {
             // Build list of all folders, except for current one
@@ -105,7 +108,7 @@ public class Bookmarks extends UIAction {
             addError("Error building folders list");
         }
 
-        if (newFolders.size() > 0) {
+        if (!newFolders.isEmpty()) {
             setAllFolders(newFolders);
         }
 
@@ -158,7 +161,13 @@ public class Bookmarks extends UIAction {
         try {
             BookmarkManager bmgr = WebloggerFactory.getWeblogger().getBookmarkManager();
             WeblogBookmarkFolder fd = bmgr.getFolder(getFolderId());
+
             if (fd != null) {
+
+                if ( "default".equals( fd.getName() ) ) {
+                    addError("Cannot delete default bookmark");
+                    return execute();
+                }
                 bmgr.removeFolder(fd);
 
                 // flush changes
@@ -171,6 +180,7 @@ public class Bookmarks extends UIAction {
                 setFolder(bmgr.getDefaultFolder(getActionWeblog()));
                 setFolderId(getFolder().getId());
             }
+
         } catch (WebloggerException ex) {
             log.error("Error deleting folder", ex);
         }
@@ -208,17 +218,16 @@ public class Bookmarks extends UIAction {
     public String move() {
 
         try {
-            BookmarkManager bmgr = WebloggerFactory.getWeblogger()
-                    .getBookmarkManager();
+            BookmarkManager bmgr = WebloggerFactory.getWeblogger().getBookmarkManager();
 
             if (log.isDebugEnabled()) {
-                log.debug("Moving bookmarks to folder - "
-                        + getTargetFolderId());
+                log.debug("Moving bookmarks to folder - " + getTargetFolderId());
             }
 
             // Move bookmarks to new parent folder.
             WeblogBookmarkFolder newFolder = bmgr.getFolder(getTargetFolderId());
             String bookmarks[] = getSelectedBookmarks();
+
             if (null != bookmarks && bookmarks.length > 0) {
                 for (int j = 0; j < bookmarks.length; j++) {
                     WeblogBookmark bd = bmgr.getBookmark(bookmarks[j]);
@@ -281,6 +290,9 @@ public class Bookmarks extends UIAction {
 
     public void setFolder(WeblogBookmarkFolder folder) {
         this.folder = folder;
+        if ( folder != null ) {
+            this.folderId = folder.getId();
+        }
     }
 
     public String getViewFolderId() {

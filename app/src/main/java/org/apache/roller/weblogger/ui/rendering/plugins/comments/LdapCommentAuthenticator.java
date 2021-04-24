@@ -18,7 +18,7 @@
 package org.apache.roller.weblogger.ui.rendering.plugins.comments;
 
 import java.util.Hashtable;
-import java.util.ResourceBundle;
+import java.util.Locale;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.roller.weblogger.config.WebloggerConfig;
+import org.apache.roller.weblogger.util.I18nMessages;
 import org.springframework.util.StringUtils;
 
 /**
@@ -56,10 +57,9 @@ import org.springframework.util.StringUtils;
  */
 public class LdapCommentAuthenticator implements CommentAuthenticator {
 
-	private transient ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources");
-
 	private static Log LOG = LogFactory.getLog(LdapCommentAuthenticator.class);
 
+    @Override
 	public String getHtml(HttpServletRequest request) {
 		String ldapUser = "";
 		String ldapPass  = "";
@@ -75,17 +75,19 @@ public class LdapCommentAuthenticator implements CommentAuthenticator {
 			ldapPass = ldapPassTemp != null ? ldapPassTemp : "";
 		}
 
+		Locale locale = CommentAuthenticatorUtils.getLocale(request);
+		I18nMessages messages = I18nMessages.getMessages(locale);
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("<p>");
-		sb.append(bundle.getString("comments.ldapAuthenticatorUserName"));
+		sb.append(messages.getString("comments.ldapAuthenticatorUserName"));
 		sb.append("</p>");
 		sb.append("<p>");
 		sb.append("<input name=\"ldapUser\" value=\"");
 		sb.append(ldapUser + "\">");
 		sb.append("</p>");
 		sb.append("<p>");
-		sb.append(bundle.getString("comments.ldapAuthenticatorPassword"));
+		sb.append(messages.getString("comments.ldapAuthenticatorPassword"));
 		sb.append("</p>");
 		sb.append("<p>");
 		sb.append("<input type=\"password\" name=\"ldapPass\" value=\"");
@@ -95,6 +97,7 @@ public class LdapCommentAuthenticator implements CommentAuthenticator {
 		return sb.toString();
 	}
 
+    @Override
 	public boolean authenticate(HttpServletRequest request) {
 		boolean validUser = false;
 		LdapContext context = null;
@@ -114,7 +117,7 @@ public class LdapCommentAuthenticator implements CommentAuthenticator {
 		
 		if(rollerPropertiesValid && userDataValid){
 			try {
-				Hashtable<String,String> env = new Hashtable<String,String>();
+				Hashtable<String,String> env = new Hashtable<>();
 				env.put(Context.INITIAL_CONTEXT_FACTORY,  
 						"com.sun.jndi.ldap.LdapCtxFactory"); 
 				if(ldapSecurityLevel != null 

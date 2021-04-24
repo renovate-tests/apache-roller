@@ -33,7 +33,7 @@ public class MediaFileDirectory {
     String name;
     String description;
     Weblog weblog;
-    Set<MediaFile> mediaFiles = new HashSet<MediaFile>();
+    Set<MediaFile> mediaFiles = new HashSet<>();
 
     public MediaFileDirectory() {
     }
@@ -171,6 +171,7 @@ public class MediaFileDirectory {
                 .append(getDescription(), o.getDescription()).isEquals();
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getId()).append(getName())
                 .append(getDescription()).toHashCode();

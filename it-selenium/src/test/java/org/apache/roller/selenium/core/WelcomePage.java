@@ -20,8 +20,6 @@ package org.apache.roller.selenium.core;
 import org.apache.roller.selenium.AbstractRollerPage;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * represents core/Welcome.jsp
  * Page Object after creation of a new user account (RegisterPage)
@@ -32,12 +30,11 @@ public class WelcomePage extends AbstractRollerPage {
 
     public WelcomePage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "New User Registration Welcome Page";
-        verifyPageTitle("Front Page: New User Registration");
+        String pageTitle = "Front Page: Welcome to Roller";
+        verifyPageTitle("loginForm", pageTitle);
     }
 
     public LoginPage doRollerLogin() {
-        clickById("a_clickHere");
         return new LoginPage(driver);
     }
 

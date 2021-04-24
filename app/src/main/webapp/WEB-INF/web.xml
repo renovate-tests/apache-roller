@@ -18,7 +18,7 @@
 
     <filter>
         <filter-name>struts2</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+        <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
     </filter>
 
     <filter>
@@ -28,6 +28,11 @@
             <param-name>targetBeanName</param-name>
             <param-value>springSecurityFilterChain</param-value>
         </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>SpringFirewallExceptionFilter</filter-name>
+        <filter-class>org.apache.roller.weblogger.ui.core.filters.SpringFirewallExceptionFilter</filter-class>
     </filter>
 
     <filter>
@@ -53,11 +58,6 @@
     <filter>
         <filter-name>IPBanFilter</filter-name>
         <filter-class>org.apache.roller.weblogger.ui.core.filters.IPBanFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>SchemeEnforcementFilter</filter-name>
-        <filter-class>org.apache.roller.weblogger.ui.core.filters.SchemeEnforcementFilter</filter-class>
     </filter>
 
     <filter>
@@ -103,12 +103,13 @@
         <url-pattern>/roller-ui/rendering/trackback/*</url-pattern>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
-
-    <!-- Scheme enforcement.  Only here until we get Spring Security scheme enforcement working -->
+    
+    <!-- keep right above spring firewall filter, see source for details -->
     <filter-mapping>
-        <filter-name>SchemeEnforcementFilter</filter-name>
+        <filter-name>SpringFirewallExceptionFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <!-- Spring Security filters - controls secure access to different parts of Roller -->
@@ -165,6 +166,10 @@
         <url-pattern>*.rol</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/struts/*</url-pattern>
     </filter-mapping>
 
     <!-- Context Listeners -->
@@ -295,6 +300,12 @@
             <param-name>enabledForExtensions</param-name>
             <param-value>true</param-value>
         </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>WebjarsServlet</servlet-name>
+        <servlet-class>org.webjars.servlet.WebjarsServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
     </servlet>
 
     <!-- BEGIN OAUTH -->
@@ -431,6 +442,11 @@
         <url-pattern>/roller-services/opensearch/*</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>WebjarsServlet</servlet-name>
+        <url-pattern>/webjars/*</url-pattern>
+    </servlet-mapping>
+
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
@@ -470,6 +486,15 @@
         <res-auth>Container</res-auth>
         <mapped-name>Session</mapped-name>
     </resource-ref>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <!-- removes whitespace caused by jsp tags -->
+            <trim-directive-whitespaces>true</trim-directive-whitespaces>
+        </jsp-property-group>
+    </jsp-config>
 
     <!--
          Uncomment below to use SSL on sensitive pages.  Alternatively,

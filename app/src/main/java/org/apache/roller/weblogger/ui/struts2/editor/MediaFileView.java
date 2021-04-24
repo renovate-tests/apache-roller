@@ -37,12 +37,14 @@ import org.apache.roller.weblogger.pojos.MediaFileFilter;
 import org.apache.roller.weblogger.ui.struts2.pagers.MediaFilePager;
 import org.apache.roller.weblogger.ui.struts2.util.KeyValueObject;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 /**
  * View media files.
  */
 @SuppressWarnings("serial")
+// TODO: make this work @AllowedMethods({"execute","view","search","delete","deleteSelected","deleteFolder","includeInGallery","moveSelected"})
 public class MediaFileView extends MediaFileBase {
 
     private static Log log = LogFactory.getLog(MediaFileView.class);
@@ -87,6 +89,7 @@ public class MediaFileView extends MediaFileBase {
     /**
      * Prepares view action
      */
+    @Override
     public void myPrepare() {
 
         if (SIZE_FILTER_TYPES == null) {
@@ -191,9 +194,9 @@ public class MediaFileView extends MediaFileBase {
      * @return String The result of the action.
      */
     @SkipValidation
+    @Override
     public String execute() {
-        MediaFileManager manager = WebloggerFactory.getWeblogger()
-                .getMediaFileManager();
+        MediaFileManager manager = WebloggerFactory.getWeblogger().getMediaFileManager();
         try {
             MediaFileDirectory directory;
             if (StringUtils.isNotEmpty(this.directoryId)) {
@@ -204,13 +207,12 @@ public class MediaFileView extends MediaFileBase {
                         getActionWeblog(), this.directoryName);
 
             } else {
-                directory = manager
-                        .getDefaultMediaFileDirectory(getActionWeblog());
+                directory = manager.getDefaultMediaFileDirectory(getActionWeblog());
             }
             this.directoryId = directory.getId();
             this.directoryName = directory.getName();
 
-            this.childFiles = new ArrayList<MediaFile>();
+            this.childFiles = new ArrayList<>();
             this.childFiles.addAll(directory.getMediaFiles());
 
             if ("type".equals(sortBy)) {
@@ -256,8 +258,7 @@ public class MediaFileView extends MediaFileBase {
                     .getMediaFileManager();
             if (!StringUtils.isEmpty(viewDirectoryId)) {
                 setDirectoryId(viewDirectoryId);
-                setCurrentDirectory(manager
-                        .getMediaFileDirectory(viewDirectoryId));
+                setCurrentDirectory(manager.getMediaFileDirectory(viewDirectoryId));
             }
         } catch (WebloggerException ex) {
             log.error("Error looking up directory", ex);
@@ -277,13 +278,11 @@ public class MediaFileView extends MediaFileBase {
         if (valSuccess) {
             MediaFileFilter filter = new MediaFileFilter();
             bean.copyTo(filter);
-            MediaFileManager manager = WebloggerFactory.getWeblogger()
-                    .getMediaFileManager();
+            MediaFileManager manager = WebloggerFactory.getWeblogger().getMediaFileManager();
             try {
-                List<MediaFile> rawResults = manager.searchMediaFiles(
-                        getActionWeblog(), filter);
+                List<MediaFile> rawResults = manager.searchMediaFiles(getActionWeblog(), filter);
                 boolean hasMore = false;
-                List<MediaFile> results = new ArrayList<MediaFile>();
+                List<MediaFile> results = new ArrayList<>();
                 results.addAll(rawResults);
                 if (results.size() > MediaFileSearchBean.PAGE_SIZE) {
                     results.remove(results.size() - 1);
@@ -327,8 +326,7 @@ public class MediaFileView extends MediaFileBase {
     public String deleteFolder() {
 
         try {
-            MediaFileManager manager = WebloggerFactory.getWeblogger()
-                    .getMediaFileManager();
+            MediaFileManager manager = WebloggerFactory.getWeblogger().getMediaFileManager();
             if (directoryId != null) {
                 log.debug("Deleting media file folder - " + directoryId + " ("
                         + directoryName + ")");

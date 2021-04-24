@@ -56,12 +56,13 @@ public class ContinuousWorkerThread extends WorkerThread {
      *
      * If we ever get interrupted then we quit.
      */
+    @Override
     public void run() {
         
         mLogger.info(this.id+" Started.");
         
-        // run forever
-        while(true) {
+        // run till interrupted
+        while (!Thread.currentThread().isInterrupted()) {
             
             // execute our job
             super.run();
@@ -75,6 +76,8 @@ public class ContinuousWorkerThread extends WorkerThread {
                 break;
             }
         }
+
+        mLogger.info(this.id+" Done.");
     }
-    
+
 }

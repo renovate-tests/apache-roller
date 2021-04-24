@@ -59,6 +59,7 @@ public class SubscriptionEntry implements Serializable, Comparable<SubscriptionE
     /**
      * Compare planet entries by comparing permalinks.
      */
+    @Override
     public int compareTo(SubscriptionEntry other) {
         return getPermalink().compareTo(other.getPermalink());
     }
@@ -66,6 +67,7 @@ public class SubscriptionEntry implements Serializable, Comparable<SubscriptionE
     /**
      * Compare planet entries by comparing permalinks.
      */
+    @Override
     public boolean equals(Object other) {        
         if (this == other) {
             return true;
@@ -80,6 +82,7 @@ public class SubscriptionEntry implements Serializable, Comparable<SubscriptionE
     /**
      * Generate hash code based on permalink.
      */
+    @Override
     public int hashCode() {
         return getPermalink().hashCode();
     }
@@ -206,7 +209,7 @@ public class SubscriptionEntry implements Serializable, Comparable<SubscriptionE
      * Returns categories as list of WeblogCategoryData objects.
      */
     public List<Category> getCategories() {
-        List<Category> list = new ArrayList<Category>();
+        List<Category> list = new ArrayList<>();
         if (getCategoriesString() != null) {
             String[] catArray = Utilities.stringToStringArray(getCategoriesString(),",");
             for (String catName : catArray) {
@@ -224,7 +227,7 @@ public class SubscriptionEntry implements Serializable, Comparable<SubscriptionE
     public Category getCategory() {
         Category cat = null;
         List cats = getCategories();
-        if (cats.size() > 0) {
+        if (!cats.isEmpty()) {
             cat = (Category)cats.get(0);
         }
         return cat;

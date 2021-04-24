@@ -26,10 +26,12 @@ import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.business.pings.PingTargetManager;
 import org.apache.roller.weblogger.pojos.PingTarget;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 /**
  * Add or modify a common ping target.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class PingTargetEdit extends UIAction {
     
     private static Log log = LogFactory.getLog(PingTargetEdit.class);
@@ -50,10 +52,12 @@ public class PingTargetEdit extends UIAction {
     }
 
     // no weblog required
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
 
+    @Override
     public void myPrepare() {
         PingTargetManager pingTargetMgr = WebloggerFactory.getWeblogger().getPingTargetManager();
 
@@ -75,17 +79,11 @@ public class PingTargetEdit extends UIAction {
         }
     }
 
-    public String execute() {
-        if (!isAdd()) {
-            getBean().copyFrom(pingTarget);
-        }
-        return INPUT;
-    }
-
     /**
      * Save ping target.
      */
-    public String save() {
+    @Override
+    public String execute() {
         myValidate();
 
         if (!hasActionErrors()) {
@@ -96,8 +94,7 @@ public class PingTargetEdit extends UIAction {
                 pingTargetMgr.savePingTarget(pingTarget);
                 WebloggerFactory.getWeblogger().flush();
 
-                addMessage(isAdd() ? "pingTarget.created" : "pingTarget.updated",
-                        pingTarget.getName());
+                addMessage(isAdd() ? "pingTarget.created" : "pingTarget.updated", pingTarget.getName());
 
                 return SUCCESS;
             } catch (WebloggerException ex) {

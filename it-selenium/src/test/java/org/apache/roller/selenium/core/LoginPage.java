@@ -20,8 +20,6 @@ package org.apache.roller.selenium.core;
 import org.apache.roller.selenium.AbstractRollerPage;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * represents core/login.jsp
  * Page Object that handles user login to Roller
@@ -30,8 +28,8 @@ public class LoginPage extends AbstractRollerPage {
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "Roller Login Page";
-        verifyPageTitle("Front Page: Welcome to Roller");
+        String pageTitle = "Front Page: Welcome to Roller";
+        verifyPageTitle("loginForm", pageTitle);
     }
 
     public MainMenuPage loginToRoller() {

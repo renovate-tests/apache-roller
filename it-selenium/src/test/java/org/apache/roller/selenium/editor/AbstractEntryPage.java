@@ -18,9 +18,6 @@
 package org.apache.roller.selenium.editor;
 
 import org.apache.roller.selenium.AbstractRollerPage;
-import org.openqa.selenium.WebDriver;
-
-import java.lang.String;
 
 /**
  * Base class for the new/edit entry pages
@@ -32,7 +29,7 @@ public abstract class AbstractEntryPage extends AbstractRollerPage {
     }
 
     public void setText(String value) {
-        setFieldValue("entry_bean_text", value);
+        setFieldValue("edit_content", value);
     }
 
     public void setSummary(String value) {
@@ -40,7 +37,7 @@ public abstract class AbstractEntryPage extends AbstractRollerPage {
     }
 
     public EntryEditPage postBlogEntry() {
-        clickById("entry_2");
+        clickById("entry_%{#mainAction}!publish");
         return new EntryEditPage(driver);
     }
 }

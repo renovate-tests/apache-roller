@@ -66,10 +66,11 @@ public class WeblogEntriesLatestPager extends AbstractWeblogEntriesPager {
     }
     
     
+    @Override
     public Map<Date, List<WeblogEntryWrapper>> getEntries() {
         
         if (entries == null) {
-            entries = new TreeMap<Date, List<WeblogEntryWrapper>>(Collections.reverseOrder());
+            entries = new TreeMap<>(Collections.reverseOrder());
             try {
                 WeblogEntrySearchCriteria wesc = new WeblogEntrySearchCriteria();
                 wesc.setWeblog(weblog);
@@ -86,7 +87,7 @@ public class WeblogEntriesLatestPager extends AbstractWeblogEntriesPager {
                 int count = 0;
                 for (Map.Entry<Date, List<WeblogEntry>> entry : mmap.entrySet()) {
                     // now we need to go through each entry in a day and wrap
-                    List<WeblogEntryWrapper> wrapped = new ArrayList<WeblogEntryWrapper>();
+                    List<WeblogEntryWrapper> wrapped = new ArrayList<>();
                     List<WeblogEntry> unwrapped = entry.getValue();
                     for (int i=0; i < unwrapped.size(); i++) {
                         if (count++ < length) {
@@ -97,7 +98,7 @@ public class WeblogEntriesLatestPager extends AbstractWeblogEntriesPager {
                     }
                     
                     // done with that day, put it in the map
-                    if (wrapped.size() > 0) {
+                    if (!wrapped.isEmpty()) {
                         entries.put(entry.getKey(), wrapped);
                     }
                 }
@@ -110,6 +111,7 @@ public class WeblogEntriesLatestPager extends AbstractWeblogEntriesPager {
     }
     
     
+    @Override
     public boolean hasMoreEntries() {
         return more;
     }

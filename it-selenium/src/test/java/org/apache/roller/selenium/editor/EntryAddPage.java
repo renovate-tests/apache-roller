@@ -19,8 +19,6 @@ package org.apache.roller.selenium.editor;
 
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * represents editor/EntryAddPage.jsp
  * Page for adding a new blog entry
@@ -29,8 +27,7 @@ public class EntryAddPage extends AbstractEntryPage {
 
     public EntryAddPage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "New Blog Entry Page";
-        verifyPageTitle("Front Page: New Entry");
+        verifyPageTitle("entry", "Front Page: New Entry");
     }
 
 }

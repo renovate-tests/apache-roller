@@ -19,6 +19,7 @@
 package org.apache.roller.weblogger.ui.rendering;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -64,12 +65,12 @@ public class WeblogRequestMapper implements RequestMapper {
     
     public WeblogRequestMapper() {
         
-        this.restricted = new HashSet<String>();
+        this.restricted = new HashSet<>();
         
         // build roller restricted list
         String restrictList = 
                 WebloggerConfig.getProperty("rendering.weblogMapper.rollerProtectedUrls");
-        if(restrictList != null && restrictList.trim().length() > 0) {
+        if(restrictList != null && !restrictList.isBlank()) {
             String[] restrict = restrictList.split(",");
             this.restricted.addAll(Arrays.asList(restrict));
         }
@@ -77,13 +78,14 @@ public class WeblogRequestMapper implements RequestMapper {
         // add user restricted list
         restrictList = 
                 WebloggerConfig.getProperty("rendering.weblogMapper.userProtectedUrls");
-        if(restrictList != null && restrictList.trim().length() > 0) {
+        if(restrictList != null && !restrictList.isBlank()) {
             String[] restrict = restrictList.split(",");
             this.restricted.addAll(Arrays.asList(restrict));
         }
     }
     
     
+    @Override
     public boolean handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
@@ -133,12 +135,19 @@ public class WeblogRequestMapper implements RequestMapper {
             return false;
         }
 
-        String weblogAbsoluteURL =
-            WebloggerConfig.getProperty("weblog.absoluteurl." + weblogHandle);
-        // If an absolute URL is specified for this weblog, make sure request URL matches
-        if (weblogAbsoluteURL != null && !request.getRequestURL().toString().startsWith(weblogAbsoluteURL)) {
-            log.debug("SKIPPED " + weblogHandle);
-            return false;
+        // is there a special hostname for the specified hostname?
+        String multiHostNameURL =  WebloggerConfig.getProperty("weblog.absoluteurl." + weblogHandle);
+        if ( multiHostNameURL != null ) {
+
+            // there is, so check that configured hostname matches the one in the request
+            URL weblogAbsoluteURL = new URL( multiHostNameURL );
+            String headerHost = request.getHeader("Host");
+            String configHost = weblogAbsoluteURL.getHost();
+
+            if (headerHost != null && configHost != null && !headerHost.equals(configHost)) {
+                log.debug("SKIPPED " + weblogHandle);
+                return false;
+            }
         }
         
         log.debug("WEBLOG_URL "+request.getServletPath());

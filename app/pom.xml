@@ -1,3 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,7 +24,7 @@
     <parent>
         <groupId>org.apache.roller</groupId>
         <artifactId>roller-project</artifactId>
-        <version>5.1.1</version>
+        <version>6.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -16,25 +33,113 @@
     <packaging>war</packaging>
 
     <properties>
-        <lucene.version>4.10.0</lucene.version>
-        <spring.version>4.1.0.RELEASE</spring.version>
-        <spring.security.version>3.2.5.RELEASE</spring.security.version>
+        <servlet.version>4.0.1</servlet.version>
+        <jsp-api.version>2.2</jsp-api.version>
+        <java-activation.version>1.2.0</java-activation.version>
+        <java-mail.version>1.4.7</java-mail.version>
+        <jstl.version>1.2</jstl.version>
+        <angular.version>1.7.8</angular.version>
+        <ant.version>1.10.9</ant.version>
+        <asm.version>9.1</asm.version>
+        <commons-validator.version>1.7</commons-validator.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <commons-codec.version>1.15</commons-codec.version>
+        <eclipse-link.version>2.7.8</eclipse-link.version>
+        <guice.version>5.0.1</guice.version>
+        <log4j2.version>2.14.1</log4j2.version>
+        <lucene.version>8.8.1</lucene.version>
+        <oauth-core.version>20100527</oauth-core.version>
+        <maven-war.version>3.2.3</maven-war.version>
+        <maven-surefire.version>2.22.2</maven-surefire.version>
+        <maven-antrun.version>1.0b3</maven-antrun.version>
+        <rome.version>1.15.0</rome.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <spring.version>5.3.5</spring.version>
+        <spring.security.version>5.4.5</spring.security.version>
+        <struts.version>2.5.26</struts.version>
+        <velocity.version>2.3</velocity.version>
+        <webjars.version>1.5</webjars.version>
+        <ws-commons-util.version>1.0.2</ws-commons-util.version>
+        <xml-security.version>1.3.0</xml-security.version>
+        <xmlrpc-version>3.1.3</xmlrpc-version>
     </properties>
 
     <dependencies>
+
+        <!-- Java EE deps -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${jsp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${java-mail.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>javax.activation</artifactId>
+            <version>${java-activation.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!--api is already in the javax.activation artifact-->
+                    <groupId>javax.activation</groupId>
+                    <artifactId>javax.activation-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- Eclipselink JPA is the default JPA implementation used by
              Roller, comment out this dependency and uncomment Hibernate's
              to use that stack instead.
 
              Logging, other special configuration during JUnit tests can be
-             placed in the src/test/resources/roller-custom.properties
-             file.
+             placed in the src/test/resources/roller-custom.properties file.
          -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>2.5.2</version>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+            <version>${eclipse-link.version}</version>
+        </dependency>
+        
+        <!-- small dependency containing slf4j bridge for eclipselink -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.extension</artifactId>
+            <version>${eclipse-link.version}</version>
         </dependency>
 
         <!-- Alternative testing with Hibernate (used by default with JBoss)
@@ -72,16 +177,116 @@
              to this pom.xml.  Check the Roller source code repository for a copy of
              this pom.xml prior to July 2013 for the necessary OpenJPA configuration -->
 
+
+        <!-- Apache deps include Velocity, Struts, Lucene, HttpClient and XML-RPC -->
+
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        
+        <!-- explicitly adding newest asm lib to improve compatibility with latest JDKs -->
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${asm.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>3.0</version>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-tree</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>${struts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-spring-plugin</artifactId>
+            <version>${struts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-convention-plugin</artifactId>
+            <version>${struts.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-tiles-plugin</artifactId>
+            <version>${struts.version}</version>
+        </dependency>
+        
+        <!-- note: update head.jsp on webjar version change -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>clipboard.js</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>1.12.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>summernote</artifactId>
+            <version>0.8.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-validation</artifactId>
+            <version>1.19.3</version>
         </dependency>
 
         <dependency>
@@ -93,37 +298,120 @@
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
+            <artifactId>lucene-backward-codecs</artifactId>
             <scope>compile</scope>
             <version>${lucene.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <scope>compile</scope>
+            <version>${lucene.version}</version>
+        </dependency>
+
+        <!-- slf4j implementing the apache commons-logging interfaces -->
+        <!-- note: commons-logging needs to be excluded in all dependencies transitive depending on it.
+        See 2006 RFE https://issues.apache.org/jira/browse/MNG-1977 for maven's missing feature of global exclusions -->
+        <dependency> 
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        
+        <!-- slf4j implementing java.util.logging interfaces (needed for WebJars, ..) -->
+        <dependency> 
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- the actual logging impl below slf4j: log4j2 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${commons-validator.version}</version>
+            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-httpclient.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+         </dependency>
+
+        <dependency>
+            <groupId>xml-security</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>${xml-security.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xmlrpc</groupId>
             <artifactId>xmlrpc-common</artifactId>
-            <version>3.1.3</version>
+            <version>${xmlrpc-version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xmlrpc</groupId>
             <artifactId>xmlrpc-client</artifactId>
-            <version>3.1.3</version>
+            <version>${xmlrpc-version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.xmlrpc</groupId>
             <artifactId>xmlrpc-server</artifactId>
-            <version>3.1.3</version>
+            <version>${xmlrpc-version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -131,74 +419,27 @@
         <dependency>
             <groupId>org.apache.ws.commons.util</groupId>
             <artifactId>ws-commons-util</artifactId>
-            <version>1.0.2</version>
+            <version>${ws-commons-util.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.oauth.core</groupId>
-            <artifactId>oauth-provider</artifactId>
-            <scope>compile</scope>
-            <version>20100527</version>
-        </dependency>
-
-        <!-- web -->
-
-        <dependency>
-	        <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.rometools</groupId>
-            <artifactId>rome-fetcher</artifactId>
-            <version>1.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.rometools</groupId>
-            <artifactId>rome-propono</artifactId>
-            <version>1.5.0</version>
-            <scope>compile</scope>
-            <exclusions>
+                <!-- has a compile scope dependency to junit for some reason -->
                 <exclusion>
-                    <groupId>xmlrpc</groupId>
-                    <artifactId>xmlrpc-common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xmlrpc</groupId>
-                    <artifactId>xmlrpc-client</artifactId>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.7</version>
-            <scope>runtime</scope>
-        </dependency>
 
-        <!-- spring deps -->
+        <!-- Spring deps (needed only for Spring Security) -->
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>aopalliance</groupId>
-                    <artifactId>aopalliance</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -223,18 +464,22 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-openid</artifactId>
             <version>${spring.security.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring.security.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -249,87 +494,82 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts2-spring-plugin</artifactId>
-            <version>2.3.16.3</version>
-        </dependency>
+        <!-- Other deps include Guice and ROME -->
 
         <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts2-tiles-plugin</artifactId>
-            <version>2.3.16.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>xml-security</groupId>
-            <artifactId>xmlsec</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-
-        <!-- Java EE deps -->
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
-            <scope>provided</scope>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
+                    <groupId>aopalliance</groupId>
+                    <artifactId>aopalliance</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.2</version>
-            <scope>provided</scope>
+            <groupId>com.jgeppert.struts2.bootstrap</groupId>
+            <artifactId>struts2-bootstrap-plugin</artifactId>
+            <version>2.5.2</version>
         </dependency>
 
         <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.4.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-fetcher</artifactId>
+            <version>${rome.version}</version>
+            <scope>compile</scope>
         </dependency>
 
-        <!-- test deps -->
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-propono</artifactId>
+            <version>${rome.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xmlrpc</groupId>
+                    <artifactId>xmlrpc-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xmlrpc</groupId>
+                    <artifactId>xmlrpc-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbynet</artifactId>
-            <version>${derby.version}</version>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-servlet-2.x</artifactId>
+            <version>${webjars.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.oauth.core</groupId>
+            <artifactId>oauth-provider</artifactId>
+            <scope>compile</scope>
+            <version>${oauth-core.version}</version>
+        </dependency>
+
+        <!-- Test deps -->
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.9.4</version>
+            <version>${ant.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbynet</artifactId>
+            <version>${derby.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -340,11 +580,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -356,7 +591,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>${maven-war.version}</version>
                 <configuration>
                     <attachClasses>true</attachClasses>
                 </configuration>
@@ -369,7 +604,7 @@
                     <webApp>
                         <contextPath>/roller</contextPath>
                     </webApp>
-                    <jettyXml>src/test/resources/jetty.xml</jettyXml>
+                    <jettyXmls>src/test/resources/jetty.xml</jettyXmls>
                     <systemProperties>
                         <systemProperty>
                             <name>roller.custom.config</name>
@@ -380,6 +615,12 @@
                 <dependencies>
                     <!-- Dependencies needed when using mvn jetty:run, not mvn test -->
                     <dependency>
+                        <groupId>commons-dbcp</groupId>
+                        <artifactId>commons-dbcp</artifactId>
+                        <version>1.4</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
                         <groupId>org.apache.derby</groupId>
                         <artifactId>derby</artifactId>
                         <version>${derby.version}</version>
@@ -389,22 +630,12 @@
                         <artifactId>derbyclient</artifactId>
                         <version>${derby.version}</version>
                     </dependency>
+                    <dependency>
+	                    <groupId>javax.mail</groupId>
+	                    <artifactId>mail</artifactId>
+	                    <version>${java-mail.version}</version>
+                    </dependency>
                 </dependencies>
-            </plugin>
-
-            <!-- Allow for standalone Tomcat deployment
-                 using mvn tomcat7:redeploy (See
-                 http://www.jroller.com/gmazza/entry/web_service_tutorial#maventomcat
-                 for necessary config info)
-            -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <server>myTomcat</server>
-                    <path>/${project.build.finalName}</path>
-                </configuration>
             </plugin>
 
             <!-- Activates the Derby database for unit tests and mvn jetty:run -->
@@ -427,7 +658,7 @@
                             <port>4224</port>
                             <sources>
                                 <script>
-                                    <sourceFile>${pom.basedir}/target/dbscripts/derby/createdb.sql</sourceFile>
+                                    <sourceFile>${project.basedir}/target/dbscripts/derby/createdb.sql</sourceFile>
                                 </script>
                             </sources>
                         </configuration>
@@ -459,7 +690,7 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>
-                                    <filtering>true</filtering>
+                                    <filtering>false</filtering>
                                 </resource>
                             </resources>
                         </configuration>
@@ -513,7 +744,7 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven-surefire.version}</version>
                 <configuration>
                     <systemProperties>
                         <property>
@@ -521,15 +752,31 @@
                             <value>${basedir}/target</value>
                         </property>
                     </systemProperties>
-                    <!--excludes>
-                        <exclude>**/??.java</exclude>
-                    </excludes-->
                 </configuration>
             </plugin>
 
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
+                <version>1.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>${maven-antrun.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <!-- last velocity version which had the Ant TexenTask -->
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
 
                 <executions>
                     <execution>
@@ -540,9 +787,19 @@
                         </goals>
                         <configuration>
                             <target>
+                                <!-- Workaround for git distribution that doesn't keep empty directories.
+                                     For detail check [ROL-2086] -->
+                                <taskdef resource="net/sf/antcontrib/antlib.xml" />
+                                <property file="${basedir}/src/main/resources/sql/dbscripts.properties" />
+                                <for list="${databases}" param="database" delimiter=" ">
+                                    <sequential>
+                                        <mkdir dir="${basedir}/target/dbscripts/@{database}" />
+                                    </sequential>
+                                </for>
+
                                 <taskdef name="texen"
                                          classname="org.apache.velocity.texen.ant.TexenTask"
-                                         classpathref="maven.compile.classpath"/>
+                                         classpathref="maven.plugin.classpath"/>
                                 <texen
                                     controlTemplate  ="control.vm"
                                     contextProperties="${basedir}/src/main/resources/sql/dbscripts.properties"
@@ -605,7 +862,7 @@
             </resource>
             <resource>
                 <!-- ensure version gets substitution -->
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources-filtered</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>roller-version.properties</include>

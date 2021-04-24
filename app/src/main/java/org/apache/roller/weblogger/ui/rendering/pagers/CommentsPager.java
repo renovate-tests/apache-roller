@@ -75,13 +75,14 @@ public class CommentsPager extends AbstractPager {
     }
     
     
+    @Override
     public List<WeblogEntryCommentWrapper> getItems() {
         
         if (comments == null) {
             // calculate offset
             int offset = getPage() * length;
             
-            List<WeblogEntryCommentWrapper> results = new ArrayList<WeblogEntryCommentWrapper>();
+            List<WeblogEntryCommentWrapper> results = new ArrayList<>();
             
             Date startDate = null;
             if(sinceDays > 0) {
@@ -126,6 +127,7 @@ public class CommentsPager extends AbstractPager {
     }
     
     
+    @Override
     public boolean hasMoreItems() {
         return more;
     }
@@ -135,7 +137,7 @@ public class CommentsPager extends AbstractPager {
         if (lastUpdated == null) {
             // feeds are sorted by pubtime, so first might not be last updated
             List<WeblogEntryCommentWrapper> items = getItems();
-            if (getItems() != null && getItems().size() > 0) {
+            if (getItems() != null && !getItems().isEmpty()) {
                 Timestamp newest = (getItems().get(0)).getPostTime();
                 for (WeblogEntryCommentWrapper c : items) {
                     if (c.getPostTime().after(newest)) {

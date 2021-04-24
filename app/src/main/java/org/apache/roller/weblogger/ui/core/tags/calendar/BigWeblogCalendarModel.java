@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.roller.weblogger.WebloggerException;
@@ -39,19 +41,23 @@ import org.apache.roller.util.DateUtil;
 public class BigWeblogCalendarModel extends WeblogCalendarModel {
     
     private static Log mLogger = LogFactory.getLog(BigWeblogCalendarModel.class);
-    
+
     protected final SimpleDateFormat starDateFormat =
             DateUtil.get8charDateFormat();
-    
+
     protected final SimpleDateFormat singleDayFormat =
             new SimpleDateFormat("dd");
-    
-    
+
+
     public BigWeblogCalendarModel(WeblogPageRequest pRequest, String cat) {
         super(pRequest, cat);
+        TimeZone tz = weblog.getTimeZoneInstance();
+        starDateFormat.setTimeZone(tz);
+        singleDayFormat.setTimeZone(tz);
     }
     
     
+    @Override
     protected void loadWeblogEntries(Date startDate, Date endDate, String catName) {
         try {
             WeblogEntryManager mgr = WebloggerFactory.getWeblogger().getWeblogEntryManager();
@@ -70,6 +76,7 @@ public class BigWeblogCalendarModel extends WeblogCalendarModel {
     }
     
     
+    @Override
     public String getContent(Date day) {
         String content = null;
         try {
@@ -131,6 +138,7 @@ public class BigWeblogCalendarModel extends WeblogCalendarModel {
      * @param alwaysURL        Always return a URL, never return null
      * @return URL for day, or null if no weblog entry on that day
      */
+    @Override
     public String computeUrl(Date day, boolean nextPrevMonthURL, boolean alwaysURL) {
         String url = null;
         // get the 8 char YYYYMMDD datestring for day, returns null

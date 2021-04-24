@@ -48,10 +48,10 @@ import javax.servlet.http.HttpServletRequest;
  * @author Yuri Mednikov
  */
 public class LiteDeviceResolver implements DeviceResolver {
-	private final List<String> mobileUserAgentPrefixes = new ArrayList<String>();
-	private final List<String> mobileUserAgentKeywords = new ArrayList<String>();
-	private final List<String> tabletUserAgentKeywords = new ArrayList<String>();
-	private final List<String> normalUserAgentKeywords = new ArrayList<String>();
+	private final List<String> mobileUserAgentPrefixes = new ArrayList<>();
+	private final List<String> mobileUserAgentKeywords = new ArrayList<>();
+	private final List<String> tabletUserAgentKeywords = new ArrayList<>();
+	private final List<String> normalUserAgentKeywords = new ArrayList<>();
 
 	public LiteDeviceResolver() {
 		init();
@@ -62,6 +62,7 @@ public class LiteDeviceResolver implements DeviceResolver {
 		this.normalUserAgentKeywords.addAll(normalUserAgentKeywords);
 	}
 
+    @Override
 	public Device resolveDevice(HttpServletRequest request) {
 		String userAgent = request.getHeader("User-Agent");
 		// UserAgent keyword detection of Normal devices

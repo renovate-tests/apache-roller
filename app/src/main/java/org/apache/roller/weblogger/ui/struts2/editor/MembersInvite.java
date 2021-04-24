@@ -30,6 +30,7 @@ import org.apache.roller.weblogger.pojos.User;
 import org.apache.roller.weblogger.pojos.WeblogPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.MailUtil;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 
 /**
@@ -37,6 +38,7 @@ import org.apache.roller.weblogger.util.MailUtil;
  *
  * TODO: handle 'disabled' result
  */
+// TODO: make this work @AllowedMethods({"execute","save","cancel"})
 public class MembersInvite extends UIAction {
     
     private static Log log = LogFactory.getLog(MembersInvite.class);
@@ -54,6 +56,7 @@ public class MembersInvite extends UIAction {
         this.pageTitle = "inviteMember.title";
     }
 
+    @Override
     public String execute() {
         
         // if group blogging is disabled then you can't change permissions
@@ -155,6 +158,7 @@ public class MembersInvite extends UIAction {
      * 
      * @return the string
      */
+    @Override
     public String cancel() {
         return CANCEL;
     }

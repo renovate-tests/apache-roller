@@ -56,7 +56,7 @@ public class GlobalPermission extends RollerPermission {
         
         // loop through user's roles, adding actions implied by each
         List<String> roles = WebloggerFactory.getWeblogger().getUserManager().getRoles(user);
-        List<String> actionsList = new ArrayList<String>();        
+        List<String> actionsList = new ArrayList<>();
         for (String role : roles) {
             String impliedActions = WebloggerConfig.getProperty("role.action." + role);
             if (impliedActions != null) {
@@ -92,6 +92,7 @@ public class GlobalPermission extends RollerPermission {
         setActionsAsList(actions);
     }
         
+    @Override
     public boolean implies(Permission perm) {
         if (getActionsAsList().isEmpty()) {
             // new, unsaved user.
@@ -136,6 +137,7 @@ public class GlobalPermission extends RollerPermission {
         return action1.equals(ADMIN) || (action1.equals(WEBLOG) && action2.equals(LOGIN));
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("GlobalPermission: ");

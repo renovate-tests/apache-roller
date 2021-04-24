@@ -59,10 +59,12 @@ public class URLModel implements Model {
     
     public URLModel() {}
     
+    @Override
     public String getModelName() {
         return "url";
     }
     
+    @Override
     public void init(Map initData) throws WebloggerException {
         
         // need a weblog request so that we can know the weblog and locale
@@ -133,7 +135,7 @@ public class URLModel implements Model {
     
     
     public String getCommentAuthenticator() {
-        return getSite()+"/CommentAuthenticatorServlet";
+        return getSite()+"/CommentAuthenticatorServlet?weblog="+weblog.getHandle();
     }
     
     

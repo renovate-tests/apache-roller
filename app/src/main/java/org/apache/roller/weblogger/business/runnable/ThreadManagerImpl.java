@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +35,8 @@ import org.apache.roller.weblogger.business.InitializationException;
 import org.apache.roller.weblogger.config.WebloggerConfig;
 import org.apache.roller.weblogger.pojos.TaskLock;
 
+import static org.apache.roller.util.RollerConstants.GRACEFUL_SHUTDOWN_WAIT_IN_MILLISECONDS;
+import static org.apache.roller.util.RollerConstants.GRACEFUL_SHUTDOWN_WAIT_IN_SECONDS;
 
 /**
  * Manage Roller's thread use.
@@ -57,10 +61,11 @@ public abstract class ThreadManagerImpl implements ThreadManager {
     }
     
     
+    @Override
     public void initialize() throws InitializationException {
                     
         // initialize tasks, making sure that each task has a tasklock record in the db
-        List<RollerTask> webloggerTasks = new ArrayList<RollerTask>();
+        List<RollerTask> webloggerTasks = new ArrayList<>();
         String tasksStr = WebloggerConfig.getProperty("tasks.enabled");
         String[] tasks = StringUtils.stripAll(StringUtils.split(tasksStr, ","));
         for ( String taskName : tasks ) {
@@ -117,12 +122,14 @@ public abstract class ThreadManagerImpl implements ThreadManager {
     }
     
     
+    @Override
     public void executeInBackground(Runnable runnable)
             throws InterruptedException {
         serviceScheduler.submit(runnable);
     }
     
     
+    @Override
     public void executeInForeground(Runnable runnable)
             throws InterruptedException {
         Future task = serviceScheduler.submit(runnable);
@@ -136,21 +143,34 @@ public abstract class ThreadManagerImpl implements ThreadManager {
     }
     
     
+    @Override
     public void shutdown() {
         
         LOG.debug("starting shutdown sequence");
         
         // trigger an immediate shutdown of any backgrounded tasks
         serviceScheduler.shutdownNow();
-        
+        try {
+            serviceScheduler.awaitTermination(GRACEFUL_SHUTDOWN_WAIT_IN_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            LOG.debug(e.getMessage(), e);
+        }
+
         // only stop if we are already running
         if(schedulerThread != null) {
             LOG.debug("Stopping scheduler");
             schedulerThread.interrupt();
+            try {
+                schedulerThread.join(GRACEFUL_SHUTDOWN_WAIT_IN_MILLISECONDS);
+                LOG.debug("Scheduler was stopped successfully");
+            } catch (InterruptedException e) {
+                LOG.debug(e.getMessage(), e);
+            }
         }
     }
     
     
+    @Override
     public void release() {
         // no-op
     }
@@ -162,6 +182,7 @@ public abstract class ThreadManagerImpl implements ThreadManager {
      * Subclasses should override this method if they plan to run in an
      * environment that supports clustered deployments.
      */
+    @Override
     public boolean registerLease(RollerTask task) {
         return true;
     }
@@ -173,6 +194,7 @@ public abstract class ThreadManagerImpl implements ThreadManager {
      * Subclasses should override this method if they plan to run in an
      * environment that supports clustered deployments.
      */
+    @Override
     public boolean unregisterLease(RollerTask task) {
         return true;
     }

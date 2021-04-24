@@ -47,6 +47,7 @@ public class AuthoritiesPopulator implements LdapAuthoritiesPopulator {
     /* (non-Javadoc)
      * @see org.springframework.security.ldap.LdapAuthoritiesPopulator#getGrantedAuthorities(org.springframework.ldap.core.DirContextOperations, String)
      */
+    @Override
     public Collection<GrantedAuthority> getGrantedAuthorities(DirContextOperations userData, String username) {
 
         // This check is probably unnecessary.
@@ -55,7 +56,7 @@ public class AuthoritiesPopulator implements LdapAuthoritiesPopulator {
         }
 
         User user;
-        List<String> roles = new ArrayList<String>();
+        List<String> roles = new ArrayList<>();
         try {
             Weblogger roller = WebloggerFactory.getWeblogger();
             UserManager umgr = roller.getUserManager();
@@ -68,7 +69,7 @@ public class AuthoritiesPopulator implements LdapAuthoritiesPopulator {
         }
 
         int roleCount = roles.size() + (defaultRole != null ? 1 : 0);
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(roleCount);
+        List<GrantedAuthority> authorities = new ArrayList<>(roleCount);
         for (String role : roles) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
@@ -77,7 +78,7 @@ public class AuthoritiesPopulator implements LdapAuthoritiesPopulator {
             authorities.add(defaultRole);
         }
 
-        if (authorities.size() == 0) {
+        if (authorities.isEmpty()) {
             // TODO: This doesn't seem like the right type of exception to throw here, but retained it, fixed the message
             throw new UsernameNotFoundException("User " + username + " has no roles granted and there is no default role set.");
         }

@@ -73,6 +73,7 @@ public class PlanetEntriesPager extends AbstractPager {
     }
     
     
+    @Override
     public List<SubscriptionEntry> getItems() {
         
         if (entries == null) {
@@ -87,7 +88,7 @@ public class PlanetEntriesPager extends AbstractPager {
                 startDate = cal.getTime();
             }
             
-            List<SubscriptionEntry> results = new ArrayList<SubscriptionEntry>();
+            List<SubscriptionEntry> results = new ArrayList<>();
             try {
                 PlanetManager planetManager = WebloggerFactory.getWeblogger().getPlanetManager();
                 Planet planet = planetManager.getWeblogger("default");
@@ -125,7 +126,8 @@ public class PlanetEntriesPager extends AbstractPager {
         return entries;
     }
     
-    
+
+    @Override
     public boolean hasMoreItems() {
         return more;
     }

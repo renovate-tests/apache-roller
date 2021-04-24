@@ -31,6 +31,7 @@ import org.apache.roller.weblogger.pojos.User;
 import org.apache.roller.weblogger.pojos.WeblogPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.Utilities;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.ParameterAware;
 
 
@@ -40,6 +41,7 @@ import org.apache.struts2.interceptor.ParameterAware;
  * TODO: fix bug in UserManager which doesn't remove permissions from the
  * website.permissions collection when a permission is deleted.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class Members extends UIAction implements ParameterAware {
     
     private static Log log = LogFactory.getLog(Members.class);
@@ -56,6 +58,7 @@ public class Members extends UIAction implements ParameterAware {
         this.pageTitle = "memberPermissions.title";
     }
     
+    @Override
     public String execute() {
         log.debug("Showing weblog members page");
         return LIST;
@@ -68,7 +71,7 @@ public class Members extends UIAction implements ParameterAware {
         int numAdmins = 0; // make sure at least one admin
         int removed = 0;
         int changed = 0;
-        List<WeblogPermission> permsList = new ArrayList<WeblogPermission>();
+        List<WeblogPermission> permsList = new ArrayList<>();
         try {
             UserManager userMgr = WebloggerFactory.getWeblogger().getUserManager();   
             List<WeblogPermission> permsFromDB = userMgr.getWeblogPermissionsIncludingPending(getActionWeblog());
@@ -166,6 +169,7 @@ public class Members extends UIAction implements ParameterAware {
         return parameters;
     }
 
+    @Override
     public void setParameters(Map parameters) {
         this.parameters = parameters;
     }
@@ -177,6 +181,6 @@ public class Members extends UIAction implements ParameterAware {
             // serious problem, but not much we can do here
             log.error("ERROR getting weblog permissions", ex);
         }
-        return new ArrayList<WeblogPermission>();
+        return new ArrayList<>();
     }
 }

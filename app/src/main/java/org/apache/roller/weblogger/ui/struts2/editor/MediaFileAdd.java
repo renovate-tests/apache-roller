@@ -36,12 +36,14 @@ import org.apache.roller.weblogger.pojos.MediaFileDirectory;
 import org.apache.roller.weblogger.util.RollerMessages;
 import org.apache.roller.weblogger.util.RollerMessages.RollerMessage;
 import org.apache.roller.weblogger.util.Utilities;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 /**
  * Adds a new media file.
  */
 @SuppressWarnings("serial")
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class MediaFileAdd extends MediaFileBase {
 
     private static Log log = LogFactory.getLog(MediaFileAdd.class);
@@ -57,9 +59,9 @@ public class MediaFileAdd extends MediaFileBase {
     // an array of filenames for uploaded files
     private String[] uploadedFilesFileName = null;
 
-    private List<MediaFile> newImages = new ArrayList<MediaFile>();
+    private List<MediaFile> newImages = new ArrayList<>();
 
-    private List<MediaFile> newFiles = new ArrayList<MediaFile>();
+    private List<MediaFile> newFiles = new ArrayList<>();
 
     private String directoryName = null;
 
@@ -72,6 +74,7 @@ public class MediaFileAdd extends MediaFileBase {
     /**
      * Prepares action class
      */
+    @Override
     public void myPrepare() {
         log.debug("Into myprepare");
         refreshAllDirectories();
@@ -114,6 +117,7 @@ public class MediaFileAdd extends MediaFileBase {
      * @return String The result of the action.
      */
     @SkipValidation
+    @Override
     public String execute() {
         return INPUT;
     }
@@ -129,8 +133,7 @@ public class MediaFileAdd extends MediaFileBase {
 
         if (!hasActionErrors()) {
 
-            MediaFileManager manager = WebloggerFactory.getWeblogger()
-                    .getMediaFileManager();
+            MediaFileManager manager = WebloggerFactory.getWeblogger().getMediaFileManager();
 
             RollerMessages errors = new RollerMessages();
             List<MediaFile> uploaded = new ArrayList();
@@ -174,27 +177,22 @@ public class MediaFileAdd extends MediaFileBase {
                         mediaFile
                                 .setContentType(this.uploadedFilesContentType[i]);
 
-                        // insome cases Struts2 is not able to guess the content
+                        // in some cases Struts2 is not able to guess the content
                         // type correctly and assigns the default, which is
                         // octet-stream. So in cases where we see octet-stream
                         // we double check and see if we can guess the content
                         // type via the Java MIME type facilities.
-                        mediaFile
-                                .setContentType(this.uploadedFilesContentType[i]);
+                        mediaFile.setContentType(this.uploadedFilesContentType[i]);
                         if (mediaFile.getContentType() == null
-                                || mediaFile.getContentType().endsWith(
-                                        "/octet-stream")) {
+                                || mediaFile.getContentType().endsWith("/octet-stream")) {
 
-                            String ctype = Utilities
-                                    .getContentTypeFromFileName(mediaFile
-                                            .getName());
+                            String ctype = Utilities.getContentTypeFromFileName(mediaFile.getName());
                             if (null != ctype) {
                                 mediaFile.setContentType(ctype);
                             }
                         }
 
-                        manager.createMediaFile(getActionWeblog(), mediaFile,
-                                errors);
+                        manager.createMediaFile(getActionWeblog(), mediaFile, errors);
                         WebloggerFactory.getWeblogger().flush();
 
                         if (mediaFile.isImageFile()) {
@@ -216,7 +214,7 @@ public class MediaFileAdd extends MediaFileBase {
                     addError(msg.getKey(), Arrays.asList(msg.getArgs()));
                 }
 
-                if (uploaded.size() > 0 && !this.errorsExist()) {
+                if (!uploaded.isEmpty() && !this.errorsExist()) {
                     addMessage("uploadFiles.uploadedFiles");
                     for (MediaFile upload : uploaded) {
                         addMessage("uploadFiles.uploadedFile",

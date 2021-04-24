@@ -18,9 +18,10 @@
 package org.apache.roller.selenium.core;
 
 import org.apache.roller.selenium.AbstractRollerPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
-import java.lang.String;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * represents core/Register.jsp
@@ -30,12 +31,18 @@ public class RegisterPage extends AbstractRollerPage {
 
     public RegisterPage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "New User Registration Page";
-        verifyPageTitle("Front Page: New User Registration");
+        String pageTitle = "Front Page: New User Registration";
+
+        verifyPageTitle("register", pageTitle);
     }
 
     public WelcomePage submitUserRegistration() {
         clickById("submit");
+
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until( ExpectedConditions.visibilityOf( driver.findElement(By.id("a_clickHere"))));
+        driver.findElement(By.id("a_clickHere")).click();
+
         return new WelcomePage(driver);
     }
 

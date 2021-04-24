@@ -15,45 +15,46 @@
  */
 package org.apache.roller.weblogger.business;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.roller.planet.business.PlanetManager;
 import org.apache.roller.planet.pojos.Planet;
 import org.apache.roller.planet.pojos.PlanetGroup;
+import org.apache.roller.planet.pojos.Subscription;
 import org.apache.roller.weblogger.TestUtils;
-import org.apache.roller.weblogger.pojos.User;
-import org.apache.roller.weblogger.pojos.WeblogEntry;
-import org.apache.roller.weblogger.pojos.WeblogEntry.PubStatus;
-import org.apache.roller.weblogger.pojos.Weblog;
 import org.apache.roller.weblogger.planet.tasks.RefreshRollerPlanetTask;
 import org.apache.roller.weblogger.planet.tasks.SyncWebsitesTask;
+import org.apache.roller.weblogger.pojos.User;
+import org.apache.roller.weblogger.pojos.Weblog;
+import org.apache.roller.weblogger.pojos.WeblogEntry;
+import org.apache.roller.weblogger.pojos.WeblogEntry.PubStatus;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
  * Test database implementation of PlanetManager for local feeds.
  * @author Dave Johnson
  */
-public class PlanetManagerLocalTest extends TestCase {
+public class PlanetManagerLocalTest  {
     public static Log log = LogFactory.getLog(PlanetManagerLocalTest.class);
     
     User testUser = null;
     Weblog testWeblog = null;
-    
-    public static void main(String[] args) {
-        TestRunner.run(PlanetManagerLocalTest.class);
-    }
-    
+
     /**
      * All tests in this suite require a user and a weblog.
      */
+    @BeforeEach
     public void setUp() throws Exception {
         
         try {
@@ -112,19 +113,29 @@ public class PlanetManagerLocalTest extends TestCase {
             throw new Exception("Test setup failed", ex);
         }
     }
-    
+
+    @AfterEach
     public void tearDown() throws Exception {
         
         try {
             TestUtils.teardownWeblog(testWeblog.getId());
             TestUtils.teardownUser(testUser.getUserName());
+            
+            // remove subscriptions which were added in testRefreshEntries()
+            PlanetManager m = WebloggerFactory.getWeblogger().getPlanetManager();
+            PlanetGroup all = m.getGroup(m.getWebloggerById("zzz_default_planet_zzz"), "all");
+            for (Subscription sub : all.getSubscriptions()) {
+                m.deleteSubscription(sub);
+            }
+
             TestUtils.endSession(true);
         } catch (Exception ex) {
             log.error(ex);
             throw new Exception("Test teardown failed", ex);
         }
     }
-    
+
+    @Test
     public void testRefreshEntries() {
         try {      
             PlanetManager planet = WebloggerFactory.getWeblogger().getPlanetManager();
@@ -152,11 +163,6 @@ public class PlanetManagerLocalTest extends TestCase {
             fail();
         }
     }
-    
-    public static Test suite() {
-        return new TestSuite(PlanetManagerLocalTest.class);
-    }
-    
-    
+
 }
 

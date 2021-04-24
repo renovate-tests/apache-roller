@@ -38,7 +38,7 @@ public final class RendererManager {
 
     private static Log log = LogFactory.getLog(RendererManager.class);
     // a set of all renderer factories we are consulting
-    private static Set<RendererFactory> rendererFactories = new HashSet<RendererFactory>();
+    private static Set<RendererFactory> rendererFactories = new HashSet<>();
 
     static {
         // lookup set of renderer factories we are going to use
@@ -46,7 +46,7 @@ public final class RendererManager {
         String userFactories = WebloggerConfig.getProperty("rendering.userRendererFactories");
 
         // instantiate user defined renderer factory classes
-        if (userFactories != null && userFactories.trim().length() > 0) {
+        if (userFactories != null && !userFactories.isBlank()) {
 
             RendererFactory rendererFactory;
             String[] uFactories = userFactories.split(",");
@@ -65,7 +65,7 @@ public final class RendererManager {
         }
 
         // instantiate roller standard renderer factory classes
-        if (rollerFactories != null && rollerFactories.trim().length() > 0) {
+        if (rollerFactories != null && !rollerFactories.isBlank()) {
 
             RendererFactory rendererFactory;
             String[] rFactories = rollerFactories.split(",");
@@ -83,7 +83,7 @@ public final class RendererManager {
             }
         }
 
-        if (rendererFactories.size() < 1) {
+        if (rendererFactories.isEmpty()) {
             // hmm ... failed to load any renderer factories?
             log.warn("Failed to load any renderer factories.  "
                     + "Rendering probably won't function as you expect.");

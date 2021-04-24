@@ -24,11 +24,13 @@ import java.util.Map;
 import org.apache.roller.weblogger.pojos.GlobalPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 
 /**
  * Action for displaying rendering cache info.
  */
+// TODO: make this work @AllowedMethods({"execute"})
 public class CacheInfo extends UIAction {
     
     // map of stats to display
@@ -45,21 +47,25 @@ public class CacheInfo extends UIAction {
     }
     
     
+    @Override
     public List<String> requiredGlobalPermissionActions() {
         return Collections.singletonList(GlobalPermission.ADMIN);
     }
     
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
     
     
+    @Override
     public void myPrepare() {
         Map cacheStats = CacheManager.getStats();
         setStats(cacheStats);
     }
     
     
+    @Override
     public String execute() {
         return SUCCESS;
     }

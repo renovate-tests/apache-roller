@@ -62,7 +62,7 @@ public class Weblog implements Serializable {
     private String  tagline          = null;
     private Boolean enableBloggerApi = Boolean.TRUE;
     private String  editorPage       = null;
-    private String  blacklist        = null;
+    private String  bannedwordslist  = null;
     private Boolean allowComments    = Boolean.TRUE;
     private Boolean emailComments    = Boolean.FALSE;
     private String  emailAddress     = null;
@@ -90,11 +90,11 @@ public class Weblog implements Serializable {
 
     private Map<String, WeblogEntryPlugin> initializedPlugins = null;
 
-    private List<WeblogCategory> weblogCategories = new ArrayList<WeblogCategory>();
+    private List<WeblogCategory> weblogCategories = new ArrayList<>();
 
-    private List<WeblogBookmarkFolder> bookmarkFolders = new ArrayList<WeblogBookmarkFolder>();
+    private List<WeblogBookmarkFolder> bookmarkFolders = new ArrayList<>();
 
-    private List<MediaFileDirectory> mediaFileDirectories = new ArrayList<MediaFileDirectory>();
+    private List<MediaFileDirectory> mediaFileDirectories = new ArrayList<>();
 
     public Weblog() {
     }
@@ -121,12 +121,14 @@ public class Weblog implements Serializable {
     
     //------------------------------------------------------- Good citizenship
 
+    @Override
     public String toString() {
         return  "{" + getId() + ", " + getHandle()
         + ", " + getName() + ", " + getEmailAddress()
         + ", " + getLocale() + ", " + getTimeZone() + "}";
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -140,6 +142,7 @@ public class Weblog implements Serializable {
             .isEquals();
     }
     
+    @Override
     public int hashCode() { 
         return new HashCodeBuilder()
             .append(getHandle())
@@ -252,12 +255,12 @@ public class Weblog implements Serializable {
         this.editorPage = editorPage;
     }
     
-    public String getBlacklist() {
-        return this.blacklist;
+    public String getBannedwordslist() {
+        return this.bannedwordslist;
     }
     
-    public void setBlacklist(String blacklist) {
-        this.blacklist = blacklist;
+    public void setBannedwordslist(String bannedwordslist) {
+        this.bannedwordslist = bannedwordslist;
     }
     
     public Boolean getAllowComments() {
@@ -381,7 +384,7 @@ public class Weblog implements Serializable {
         this.setEnableBloggerApi(other.getEnableBloggerApi());
         this.setBloggerCategory(other.getBloggerCategory());
         this.setEditorPage(other.getEditorPage());
-        this.setBlacklist(other.getBlacklist());
+        this.setBannedwordslist(other.getBannedwordslist());
         this.setAllowComments(other.getAllowComments());
         this.setEmailComments(other.getEmailComments());
         this.setEmailAddress(other.getEmailAddress());
@@ -641,7 +644,7 @@ public class Weblog implements Serializable {
         if (length > MAX_ENTRIES) {
             length = MAX_ENTRIES;
         }
-        List<WeblogEntry> recentEntries = new ArrayList<WeblogEntry>();
+        List<WeblogEntry> recentEntries = new ArrayList<>();
         if (length < 1) {
             return recentEntries;
         }
@@ -672,8 +675,8 @@ public class Weblog implements Serializable {
         if (length > MAX_ENTRIES) {
             length = MAX_ENTRIES;
         }
-        List<WeblogEntry> recentEntries = new ArrayList<WeblogEntry>();
-        List<String> tags = new ArrayList<String>();
+        List<WeblogEntry> recentEntries = new ArrayList<>();
+        List<String> tags = new ArrayList<>();
         if (tag != null) {
             tags.add(tag);
         }
@@ -703,7 +706,7 @@ public class Weblog implements Serializable {
         if (length > MAX_ENTRIES) {
             length = MAX_ENTRIES;
         }
-        List<WeblogEntryComment> recentComments = new ArrayList<WeblogEntryComment>();
+        List<WeblogEntryComment> recentComments = new ArrayList<>();
         if (length < 1) {
             return recentComments;
         }
@@ -768,7 +771,7 @@ public class Weblog implements Serializable {
      * @return          Collection of WeblogEntryTag objects
      */
     public List<TagStat> getPopularTags(int sinceDays, int length) {
-        List<TagStat> results = new ArrayList<TagStat>();
+        List<TagStat> results = new ArrayList<>();
         Date startDate = null;
         if(sinceDays > 0) {
             Calendar cal = Calendar.getInstance();

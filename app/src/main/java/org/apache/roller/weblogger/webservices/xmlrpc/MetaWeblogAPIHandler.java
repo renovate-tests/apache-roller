@@ -160,7 +160,7 @@ public class MetaWeblogAPIHandler extends BloggerAPIHandler {
             Timestamp current =
                     new Timestamp(System.currentTimeMillis());
             
-            if ( !title.equals("") ) {
+            if ( !title.isEmpty() ) {
                 entry.setTitle(title);
             }
             entry.setText(description);
@@ -474,11 +474,16 @@ public class MetaWeblogAPIHandler extends BloggerAPIHandler {
         
         struct.put("userid", entry.getCreator().getUserName());
         struct.put("author", entry.getCreator().getEmailAddress());
-        
-        Vector catArray = new Vector();
-        catArray.addElement(entry.getCategory().getName());
-        struct.put("categories", catArray);
-        
+       
+        if ( entry.getCategory() != null ) {
+            Vector catArray = new Vector();
+            catArray.addElement(entry.getCategory().getName());
+            struct.put("categories", catArray);
+
+        } else {
+            mLogger.warn("Entry " + entry.getId() + " has null category");
+        }
+
         return struct;
     }
     

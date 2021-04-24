@@ -21,6 +21,7 @@ package org.apache.roller.weblogger.ui.struts2.core;
 import org.apache.roller.weblogger.config.AuthMethod;
 import org.apache.roller.weblogger.config.WebloggerConfig;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 /**
  * Handle user logins.
@@ -33,6 +34,7 @@ import org.apache.roller.weblogger.ui.struts2.util.UIAction;
  *
  * @see org.apache.roller.weblogger.ui.struts2.core.Register
  */
+// TODO: make this work @AllowedMethods({"execute"})
 public class Login extends UIAction {
     
     private String error = null;
@@ -44,11 +46,13 @@ public class Login extends UIAction {
     }
 
     // override default security, we do not require an authenticated user
+    @Override
     public boolean isUserRequired() {
         return false;
     }
     
     // override default security, we do not require an action weblog
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
@@ -57,6 +61,7 @@ public class Login extends UIAction {
         return authMethod.name();
     }
 
+    @Override
     public String execute() {
         
         // set action error message if there was login error

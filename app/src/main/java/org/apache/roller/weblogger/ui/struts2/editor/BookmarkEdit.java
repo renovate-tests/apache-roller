@@ -27,12 +27,14 @@ import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.pojos.WeblogBookmark;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 
 /**
  * Edit a new or existing bookmark (blogroll item).
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class BookmarkEdit extends UIAction {
     
     private static Log log = LogFactory.getLog(BookmarkEdit.class);
@@ -56,6 +58,7 @@ public class BookmarkEdit extends UIAction {
         this.pageTitle = pageTitle;
     }
 
+    @Override
     public void myPrepare() {
         if (StringUtils.isEmpty(bean.getId())) {
             // Create and initialize new, not-yet-saved WeblogBookmark
@@ -83,6 +86,7 @@ public class BookmarkEdit extends UIAction {
     
     
     @SkipValidation
+    @Override
     public String execute() {
         if (!isAdd()) {
             // load bean with database values during initial load
@@ -95,15 +99,14 @@ public class BookmarkEdit extends UIAction {
     public String save() {
         myValidate();
 
-        if(!hasActionErrors()) {
+        if (!hasActionErrors()) {
             try {
                 getBean().copyTo(bookmark);
                 BookmarkManager bmgr = WebloggerFactory.getWeblogger().getBookmarkManager();
                 bmgr.saveBookmark(bookmark);
                 WebloggerFactory.getWeblogger().flush();
                 CacheManager.invalidate(bookmark);
-                addMessage(isAdd() ? "bookmarkForm.created" : "bookmarkForm.updated",
-                        getBookmark().getName());
+                addMessage(isAdd() ? "bookmarkForm.created" : "bookmarkForm.updated", getBookmark().getName());
                 return SUCCESS;
 
             } catch(Exception ex) {
@@ -147,4 +150,5 @@ public class BookmarkEdit extends UIAction {
     public WeblogBookmark getBookmark() {
         return bookmark;
     }
+
 }

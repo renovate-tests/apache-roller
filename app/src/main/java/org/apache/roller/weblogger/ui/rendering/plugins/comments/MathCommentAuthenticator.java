@@ -18,53 +18,56 @@
 
 package org.apache.roller.weblogger.ui.rendering.plugins.comments;
 
+import java.util.Locale;
 import java.util.Random;
-import java.util.ResourceBundle;
+import java.security.SecureRandom;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.roller.weblogger.util.I18nMessages;
 
 
 /**
  * Asks the commenter to answer a simple math question.
  */
 public class MathCommentAuthenticator implements CommentAuthenticator {
-    
-    private transient ResourceBundle bundle =
-            ResourceBundle.getBundle("ApplicationResources");
-    
+    private Random ran = new SecureRandom();
     private static Log mLogger = LogFactory.getLog(MathCommentAuthenticator.class);
-    
-    
+
+
+    @Override
     public String getHtml(HttpServletRequest request) {
-        
-        String answer = "";
-        
+
+        int answer = 0;
+
         HttpSession session = request.getSession(true);
         if (session.getAttribute("mathAnswer") == null) {
             // starting a new test
-            Random ran = new Random();
-            int value1 = ran.nextInt(10);
-            int value2 = ran.nextInt(100);
+            int value1 = this.ran.nextInt(10);
+            int value2 = this.ran.nextInt(100);
             int sum = value1 + value2;
             session.setAttribute("mathValue1", value1);
             session.setAttribute("mathValue2", value2);
             session.setAttribute("mathAnswer", sum);
         } else {
             // preserve user's answer
-            answer = request.getParameter("answer");
-            answer = (answer == null) ? "" : answer;
+            String answerString = request.getParameter("answer");
+            try {
+                answer = Integer.parseInt(answerString);
+            } catch (Throwable intentionallyIgnored) {}
         }
-        
+
         // pull existing values out of session
         Integer value1o = (Integer)request.getSession().getAttribute("mathValue1");
         Integer value2o = (Integer)request.getSession().getAttribute("mathValue2");
-        
+
+        Locale locale = CommentAuthenticatorUtils.getLocale(request);
+        I18nMessages messages = I18nMessages.getMessages(locale);
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("<p>");
-        sb.append(bundle.getString("comments.mathAuthenticatorQuestion"));
+        sb.append(messages.getString("comments.mathAuthenticatorQuestion"));
         sb.append("</p><p>");
         sb.append(value1o);
         sb.append(" + ");
@@ -73,23 +76,24 @@ public class MathCommentAuthenticator implements CommentAuthenticator {
         sb.append("<input name=\"answer\" value=\"");
         sb.append(answer);
         sb.append("\" /></p>");
-        
+
         return sb.toString();
     }
-    
-    
+
+
+    @Override
     public boolean authenticate(HttpServletRequest request) {
-        
+
         boolean authentic = false;
-        
+
         HttpSession session = request.getSession(false);
         String answerString = request.getParameter("answer");
-        
+
         if (answerString != null && session != null) {
             try {
                 int answer = Integer.parseInt(answerString);
                 Integer sum = (Integer) session.getAttribute("mathAnswer");
-                
+
                 if (sum != null && answer == sum) {
                     authentic = true;
                     session.removeAttribute("mathAnswer");
@@ -103,9 +107,9 @@ public class MathCommentAuthenticator implements CommentAuthenticator {
                 mLogger.error(e);
             }
         }
-        
+
         return authentic;
     }
-    
+
 }
 

@@ -64,6 +64,7 @@ public class FeedServlet extends HttpServlet {
     /**
      * Init method for this servlet
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
         super.init(servletConfig);
@@ -81,6 +82,7 @@ public class FeedServlet extends HttpServlet {
     /**
      * Handle GET requests for weblog feeds.
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -188,8 +190,7 @@ public class FeedServlet extends HttpServlet {
                 invalid = true;
             }
 
-        } else if (feedRequest.getTags() != null
-                && feedRequest.getTags().size() > 0) {
+        } else if (feedRequest.getTags() != null && !feedRequest.getTags().isEmpty()) {
 
             try {
                 // tags specified. make sure they exist.
@@ -216,7 +217,7 @@ public class FeedServlet extends HttpServlet {
         }
 
         // looks like we need to render content
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        HashMap<String, Object> model = new HashMap<>();
         String pageId;
         try {
             // determine what template to render with
@@ -240,7 +241,7 @@ public class FeedServlet extends HttpServlet {
             }
 
             // populate the rendering model
-            Map<String, Object> initData = new HashMap<String, Object>();
+            Map<String, Object> initData = new HashMap<>();
             initData.put("parsedRequest", feedRequest);
 
             // define url strategy

@@ -27,6 +27,7 @@ import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.UserManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ public class JPAUserManagerImpl implements UserManager {
     private final JPAPersistenceStrategy strategy;
     
     // cached mapping of userNames -> userIds
-    private Map<String, String> userNameToIdMap = new HashMap<String, String>();
+    private Map<String, String> userNameToIdMap = Collections.synchronizedMap(new HashMap<String, String>());
     
 
     @com.google.inject.Inject
@@ -59,16 +60,19 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
 
+    @Override
     public void release() {}
     
     
     //--------------------------------------------------------------- user CRUD
  
+    @Override
     public void saveUser(User data) throws WebloggerException {
         this.strategy.store(data);
     }
 
     
+    @Override
     public void removeUser(User user) throws WebloggerException {
         String userName = user.getUserName();
         
@@ -84,6 +88,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void addUser(User newUser) throws WebloggerException {
 
         if (newUser == null) {
@@ -93,7 +98,7 @@ public class JPAUserManagerImpl implements UserManager {
         boolean adminUser = false;
         List existingUsers = this.getUsers(Boolean.TRUE, null, null, 0, 1);
         boolean firstUserAdmin = WebloggerConfig.getBooleanProperty("users.firstUserAdmin");
-        if (existingUsers.size() == 0 && firstUserAdmin) {
+        if (existingUsers.isEmpty() && firstUserAdmin) {
             // Make first user an admin
             adminUser = true;
 
@@ -123,6 +128,7 @@ public class JPAUserManagerImpl implements UserManager {
 
     //------------------------------------------------------------ user queries
 
+    @Override
     public User getUserByUserName(String userName) throws WebloggerException {
         return getUserByUserName(userName, Boolean.TRUE);
     }
@@ -147,6 +153,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
 
+    @Override
     public User getUserByUserName(String userName, Boolean enabled)
             throws WebloggerException {
 
@@ -203,6 +210,7 @@ public class JPAUserManagerImpl implements UserManager {
         return user;
     }
 
+    @Override
     public List<User> getUsers(Boolean enabled, Date startDate, Date endDate,
             int offset, int length)
             throws WebloggerException {
@@ -246,6 +254,7 @@ public class JPAUserManagerImpl implements UserManager {
         return query.getResultList();
     }
 
+    @Override
     public List<User> getUsersStartingWith(String startsWith, Boolean enabled,
             int offset, int length) throws WebloggerException {
         TypedQuery<User> query;
@@ -281,9 +290,10 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public Map<String, Long> getUserNameLetterMap() throws WebloggerException {
         String lc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        Map<String, Long> results = new TreeMap<String, Long>();
+        Map<String, Long> results = new TreeMap<>();
         TypedQuery<Long> query = strategy.getNamedQuery(
                 "User.getCountByUserNameLike", Long.class);
         for (int i=0; i<26; i++) {
@@ -297,6 +307,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public List<User> getUsersByLetter(char letter, int offset, int length)
             throws WebloggerException {
         TypedQuery<User> query = strategy.getNamedQuery(
@@ -315,6 +326,7 @@ public class JPAUserManagerImpl implements UserManager {
     /**
      * Get count of users, enabled only
      */
+    @Override
     public long getUserCount() throws WebloggerException {
         TypedQuery<Long> q = strategy.getNamedQuery("User.getCountEnabledDistinct", Long.class);
         q.setParameter(1, Boolean.TRUE);
@@ -322,6 +334,7 @@ public class JPAUserManagerImpl implements UserManager {
         return results.get(0);
     }
 
+    @Override
     public User getUserByActivationCode(String activationCode) throws WebloggerException {
         if (activationCode == null) {
             throw new WebloggerException("activationcode is null");
@@ -338,6 +351,7 @@ public class JPAUserManagerImpl implements UserManager {
     
     //-------------------------------------------------------- permissions CRUD
  
+    @Override
     public boolean checkPermission(RollerPermission perm, User user) throws WebloggerException {
 
         // if permission a weblog permission
@@ -366,6 +380,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public WeblogPermission getWeblogPermission(Weblog weblog, User user) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByUserName&WeblogId"
                 , WeblogPermission.class);
@@ -378,6 +393,7 @@ public class JPAUserManagerImpl implements UserManager {
         }
     }
 
+    @Override
     public WeblogPermission getWeblogPermissionIncludingPending(Weblog weblog, User user) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByUserName&WeblogIdIncludingPending",
                 WeblogPermission.class);
@@ -390,6 +406,7 @@ public class JPAUserManagerImpl implements UserManager {
         }
     }
 
+    @Override
     public void grantWeblogPermission(Weblog weblog, User user, List<String> actions) throws WebloggerException {
 
         // first, see if user already has a permission for the specified object
@@ -414,6 +431,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void grantWeblogPermissionPending(Weblog weblog, User user, List<String> actions) throws WebloggerException {
 
         // first, see if user already has a permission for the specified object
@@ -439,6 +457,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void confirmWeblogPermission(Weblog weblog, User user) throws WebloggerException {
 
         // get specified permission
@@ -459,6 +478,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void declineWeblogPermission(Weblog weblog, User user) throws WebloggerException {
 
         // get specified permission
@@ -477,6 +497,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void revokeWeblogPermission(Weblog weblog, User user, List<String> actions) throws WebloggerException {
 
         // get specified permission
@@ -504,6 +525,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public List<WeblogPermission> getWeblogPermissions(User user) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByUserName",
                 WeblogPermission.class);
@@ -511,6 +533,7 @@ public class JPAUserManagerImpl implements UserManager {
         return q.getResultList();
     }
 
+    @Override
     public List<WeblogPermission> getWeblogPermissions(Weblog weblog) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByWeblogId",
                 WeblogPermission.class);
@@ -518,6 +541,7 @@ public class JPAUserManagerImpl implements UserManager {
         return q.getResultList();
     }
 
+    @Override
     public List<WeblogPermission> getWeblogPermissionsIncludingPending(Weblog weblog) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByWeblogIdIncludingPending",
                 WeblogPermission.class);
@@ -525,6 +549,7 @@ public class JPAUserManagerImpl implements UserManager {
         return q.getResultList();
     }
 
+    @Override
     public List<WeblogPermission> getPendingWeblogPermissions(User user) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByUserName&Pending",
                 WeblogPermission.class);
@@ -532,6 +557,7 @@ public class JPAUserManagerImpl implements UserManager {
         return q.getResultList();
     }
 
+    @Override
     public List<WeblogPermission> getPendingWeblogPermissions(Weblog weblog) throws WebloggerException {
         TypedQuery<WeblogPermission> q = strategy.getNamedQuery("WeblogPermission.getByWeblogId&Pending",
                 WeblogPermission.class);
@@ -545,6 +571,7 @@ public class JPAUserManagerImpl implements UserManager {
     /**
      * Returns true if user has role specified.
      */
+    @Override
     public boolean hasRole(String roleName, User user) throws WebloggerException {
         TypedQuery<UserRole> q = strategy.getNamedQuery("UserRole.getByUserNameAndRole", UserRole.class);
         q.setParameter(1, user.getUserName());
@@ -561,11 +588,12 @@ public class JPAUserManagerImpl implements UserManager {
     /**
      * Get all of user's roles.
      */
+    @Override
     public List<String> getRoles(User user) throws WebloggerException {
         TypedQuery<UserRole> q = strategy.getNamedQuery("UserRole.getByUserName", UserRole.class);
         q.setParameter(1, user.getUserName());
         List<UserRole> roles = q.getResultList();
-        List<String> roleNames = new ArrayList<String>();
+        List<String> roleNames = new ArrayList<>();
         if (roles != null) {
             for (UserRole userRole : roles) {
                 roleNames.add(userRole.getRole());
@@ -577,6 +605,7 @@ public class JPAUserManagerImpl implements UserManager {
     /**
      * Grant to user role specified by role name.
      */
+    @Override
     public void grantRole(String roleName, User user) throws WebloggerException {
         if (!hasRole(roleName, user)) {
             UserRole role = new UserRole(user.getUserName(), roleName);
@@ -585,6 +614,7 @@ public class JPAUserManagerImpl implements UserManager {
     }
 
     
+    @Override
     public void revokeRole(String roleName, User user) throws WebloggerException {
         TypedQuery<UserRole> q = strategy.getNamedQuery("UserRole.getByUserNameAndRole", UserRole.class);
         q.setParameter(1, user.getUserName());

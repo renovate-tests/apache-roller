@@ -37,10 +37,12 @@ import org.apache.roller.weblogger.pojos.Weblog;
 import org.apache.roller.weblogger.pojos.WeblogTemplate;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.cache.CacheManager;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 /**
  * Action for controlling theme selection.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class ThemeEdit extends UIAction {
 
     private static final long serialVersionUID = 4644653507344432426L;
@@ -71,6 +73,7 @@ public class ThemeEdit extends UIAction {
         this.pageTitle = "themeEditor.title";
     }
 
+    @Override
     public void myPrepare() {
         ThemeManager themeMgr = WebloggerFactory.getWeblogger()
                 .getThemeManager();
@@ -98,6 +101,7 @@ public class ThemeEdit extends UIAction {
         }
     }
 
+    @Override
     public String execute() {
 
         // set theme to current value

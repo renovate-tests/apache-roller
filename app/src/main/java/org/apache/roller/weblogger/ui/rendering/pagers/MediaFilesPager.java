@@ -59,13 +59,14 @@ public class MediaFilesPager extends AbstractPager {
     }
     
     
+    @Override
     public List<MediaFile> getItems() {
         
         if (this.mediaFiles == null) {
             // calculate offset
             //int offset = getPage() * length;
             
-            List<MediaFile> results = new ArrayList<MediaFile>();
+            List<MediaFile> results = new ArrayList<>();
             
             try {
                 MediaFileManager mgr = WebloggerFactory.getWeblogger().getMediaFileManager();
@@ -80,6 +81,7 @@ public class MediaFilesPager extends AbstractPager {
     }
     
     
+    @Override
     public boolean hasMoreItems() {
         return false;
     }
@@ -89,7 +91,7 @@ public class MediaFilesPager extends AbstractPager {
         if (lastUpdated == null) {
             // feeds are sorted by pubtime, so first might not be last updated
             List<MediaFile> items = getItems();
-            if (items != null && items.size() > 0) {
+            if (items != null && !items.isEmpty()) {
                 Timestamp newest = items.get(0).getLastUpdated();
                 for (MediaFile file : items) {
                     if (file.getLastUpdated().after(newest)) {

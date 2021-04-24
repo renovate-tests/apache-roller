@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,6 +62,7 @@ public class RomeFeedFetcher implements org.apache.roller.planet.business.fetche
     /**
      * @inheritDoc
      */
+    @Override
     public Subscription fetchSubscription(String feedURL) 
             throws FetcherException {
         return fetchSubscription(feedURL, null);
@@ -71,6 +72,7 @@ public class RomeFeedFetcher implements org.apache.roller.planet.business.fetche
     /**
      * @inheritDoc
      */
+    @Override
     public Subscription fetchSubscription(String feedURL, Date lastModified) 
             throws FetcherException {
         
@@ -211,7 +213,7 @@ public class RomeFeedFetcher implements org.apache.roller.planet.business.fetche
         }
         
         // get content and unescape if it is 'text/plain'
-        if (romeEntry.getContents().size() > 0) {
+        if (!romeEntry.getContents().isEmpty()) {
             SyndContent content= (SyndContent)romeEntry.getContents().get(0);
             if (content != null && content.getType().equals("text/plain")) {
                 newEntry.setText(StringEscapeUtils.unescapeHtml4(content.getValue()));
@@ -226,8 +228,8 @@ public class RomeFeedFetcher implements org.apache.roller.planet.business.fetche
         }
         
         // copy categories
-        if (romeEntry.getCategories().size() > 0) {
-            List<String> list = new ArrayList<String>();
+        if (!romeEntry.getCategories().isEmpty()) {
+            List<String> list = new ArrayList<>();
             for (Object cat : romeEntry.getCategories()) {
                 list.add(((SyndCategory) cat).getName());
             }

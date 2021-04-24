@@ -31,7 +31,7 @@ public class Planet implements Comparable<Planet> {
     private String handle = null;
     private String title = null;
     private String description = null;
-    private Set<PlanetGroup> groups = new TreeSet<PlanetGroup>();
+    private Set<PlanetGroup> groups = new TreeSet<>();
     
     
     public Planet() {
@@ -48,6 +48,7 @@ public class Planet implements Comparable<Planet> {
     /**
      * For comparing planets and sorting, ordered by Title.
      */
+    @Override
     public int compareTo(Planet other) {
         return getTitle().compareTo(other.getTitle());
     }

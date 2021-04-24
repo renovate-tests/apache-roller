@@ -58,6 +58,7 @@ public class RSDServlet extends HttpServlet {
     /**
      * Init method for this servlet
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
         super.init(servletConfig);
@@ -68,6 +69,7 @@ public class RSDServlet extends HttpServlet {
     /**
      * Handle GET requests for weblog pages.
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -110,7 +112,7 @@ public class RSDServlet extends HttpServlet {
         response.setContentType("application/rsd+xml; charset=utf-8");
 
         // populate the model
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        HashMap<String, Object> model = new HashMap<>();
         model.put("website", weblog);
         model.put("absBaseURL", WebloggerRuntimeConfig.getAbsoluteContextURL());
 

@@ -57,11 +57,13 @@ import org.apache.roller.weblogger.util.RollerMessages;
 import org.apache.roller.weblogger.util.RollerMessages.RollerMessage;
 import org.apache.roller.weblogger.util.Trackback;
 import org.apache.roller.weblogger.util.TrackbackNotAllowedException;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 /**
  * Edit a new or existing entry.
  */
+// TODO: make this work @AllowedMethods({"execute","firstSave","saveDraft","publish","entryEdit","entryAdd"})
 public final class EntryEdit extends UIAction {
 
     private static Log log = LogFactory.getLog(EntryEdit.class);
@@ -89,6 +91,7 @@ public final class EntryEdit extends UIAction {
         return Collections.singletonList(WeblogPermission.EDIT_DRAFT);
     }
 
+    @Override
     public void myPrepare() {
         if (getBean().getId() == null) {
             // Create and initialize new, not-yet-saved Weblog Entry
@@ -116,6 +119,7 @@ public final class EntryEdit extends UIAction {
      * @return String The result of the action.
      */
     @SkipValidation
+    @Override
     public String execute() {
         if (getActionName().equals("entryEdit")) {
             // load bean with pojo data
@@ -443,8 +447,8 @@ public final class EntryEdit extends UIAction {
             Map<String, WeblogEntryPlugin> plugins = ppmgr
                     .getWeblogEntryPlugins(getActionWeblog());
 
-            if (plugins.size() > 0) {
-                availablePlugins = new ArrayList<WeblogEntryPlugin>();
+            if (!plugins.isEmpty()) {
+                availablePlugins = new ArrayList<>();
                 for (WeblogEntryPlugin plugin : plugins.values()) {
                     availablePlugins.add(plugin);
                 }

@@ -18,7 +18,7 @@
 
 package org.apache.roller.weblogger.pojos.wrapper;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.URLStrategy;
 import org.apache.roller.weblogger.pojos.TagStat;
@@ -83,7 +83,7 @@ public final class WeblogWrapper {
     
     public List<ThemeTemplateWrapper> getTemplates() throws WebloggerException {
         List<? extends ThemeTemplate> unwrapped = this.pojo.getTheme().getTemplates();
-        List<ThemeTemplateWrapper> wrapped = new ArrayList<ThemeTemplateWrapper>(unwrapped.size());
+        List<ThemeTemplateWrapper> wrapped = new ArrayList<>(unwrapped.size());
 
         int i = 0;
         for (ThemeTemplate template : unwrapped) {
@@ -128,8 +128,8 @@ public final class WeblogWrapper {
         return this.pojo.getEditorPage();
     }
 
-    public String getBlacklist() {
-        return this.pojo.getBlacklist();
+    public String getBannedwordslist() {
+        return this.pojo.getBannedwordslist();
     }
     
     
@@ -210,6 +210,7 @@ public final class WeblogWrapper {
     }
 
     /* deprecated in Roller 5.1 */
+    @Deprecated
     public Boolean getEnabled() {
         return getVisible();
     }
@@ -292,7 +293,7 @@ public final class WeblogWrapper {
 
     public List<WeblogCategoryWrapper> getWeblogCategories() {
         List<WeblogCategory> unwrapped = this.pojo.getWeblogCategories();
-        List<WeblogCategoryWrapper> wrapped = new ArrayList<WeblogCategoryWrapper>(unwrapped.size());
+        List<WeblogCategoryWrapper> wrapped = new ArrayList<>(unwrapped.size());
 
         int i = 0;
         for (WeblogCategory category : unwrapped) {
@@ -309,7 +310,7 @@ public final class WeblogWrapper {
     
     public List<WeblogEntryWrapper> getRecentWeblogEntries(String cat,int length) {
         List<WeblogEntry> unwrapped = this.pojo.getRecentWeblogEntries(cat, length);
-        List<WeblogEntryWrapper> wrapped = new ArrayList<WeblogEntryWrapper>(unwrapped.size());
+        List<WeblogEntryWrapper> wrapped = new ArrayList<>(unwrapped.size());
 
         int i = 0;
         for (WeblogEntry we : unwrapped) {
@@ -322,7 +323,7 @@ public final class WeblogWrapper {
     
     public List<WeblogEntryWrapper> getRecentWeblogEntriesByTag(String tag,int length) {
         List<WeblogEntry> unwrapped = pojo.getRecentWeblogEntriesByTag(tag,length);
-        List<WeblogEntryWrapper> wrapped = new ArrayList<WeblogEntryWrapper>(unwrapped.size());
+        List<WeblogEntryWrapper> wrapped = new ArrayList<>(unwrapped.size());
 
         int i = 0;
         for (WeblogEntry we : unwrapped) {
@@ -335,7 +336,7 @@ public final class WeblogWrapper {
     
     public List<WeblogEntryCommentWrapper> getRecentComments(int length) {
         List<WeblogEntryComment> unwrapped = this.pojo.getRecentComments(length);
-        List<WeblogEntryCommentWrapper> wrapped = new ArrayList<WeblogEntryCommentWrapper>(unwrapped.size());
+        List<WeblogEntryCommentWrapper> wrapped = new ArrayList<>(unwrapped.size());
 
         int i = 0;
         for (WeblogEntryComment wec : unwrapped) {

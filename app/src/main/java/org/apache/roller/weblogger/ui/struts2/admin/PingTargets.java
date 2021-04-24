@@ -29,10 +29,12 @@ import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.business.pings.PingTargetManager;
 import org.apache.roller.weblogger.pojos.PingTarget;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 /**
  * Admin action for managing global ping targets.
  */
+// TODO: make this work @AllowedMethods({"execute","enable","disable","delete","deleteConfirm"})
 public class PingTargets extends UIAction {
     
     private static Log log = LogFactory.getLog(PingTargets.class);
@@ -53,6 +55,7 @@ public class PingTargets extends UIAction {
     private String pingTargetId = null;
 
     // no weblog required
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
@@ -68,6 +71,7 @@ public class PingTargets extends UIAction {
     }
 
     // prepare method needs to set ping targets list
+    @Override
     public void myPrepare() {
 
         // load list of ping targets
@@ -87,6 +91,7 @@ public class PingTargets extends UIAction {
     /**
      * Display the ping targets.
      */
+    @Override
     public String execute() {
         return LIST;
     }

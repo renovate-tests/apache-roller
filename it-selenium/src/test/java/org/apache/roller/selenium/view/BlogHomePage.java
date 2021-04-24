@@ -21,8 +21,6 @@ import org.apache.roller.selenium.AbstractRollerPage;
 import org.apache.roller.selenium.editor.EntryAddPage;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * Represents a URL for the home page of a blog
  * (URL similar to http://localhost:8080/roller/myblog)
@@ -31,8 +29,7 @@ public class BlogHomePage extends AbstractRollerPage {
 
     public BlogHomePage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "blog home page";
-        verifyIdOnPage("id_weblog");
+        verifyPageTitle("searchForm", "Bob's Blog");
     }
 
     public EntryAddPage createNewBlogEntry() {

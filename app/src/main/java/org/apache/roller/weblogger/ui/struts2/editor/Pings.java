@@ -28,6 +28,7 @@ import org.apache.roller.weblogger.business.WebloggerFactory;
 import org.apache.roller.weblogger.pojos.AutoPing;
 import org.apache.roller.weblogger.pojos.PingTarget;
 import org.apache.roller.weblogger.business.pings.WeblogUpdatePinger;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.xmlrpc.XmlRpcException;
 import java.io.IOException;
 import java.net.SocketException;
@@ -43,6 +44,7 @@ import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 /**
  * Actions for setting up automatic ping configuration for a weblog.
  */
+// TODO: make this work @AllowedMethods({"execute","enable","disable","pingNow"})
 public class Pings extends UIAction {
     
     private static Log log = LogFactory.getLog(Pings.class);
@@ -73,6 +75,7 @@ public class Pings extends UIAction {
     }
     
     
+    @Override
     public void myPrepare() {
         
         PingTargetManager pingTargetMgr = WebloggerFactory.getWeblogger().getPingTargetManager();
@@ -99,6 +102,7 @@ public class Pings extends UIAction {
     /*
      * Display the common ping targets with page
      */
+    @Override
     public String execute() {
         
         // load map of enabled auto pings
@@ -163,7 +167,7 @@ public class Pings extends UIAction {
                     WeblogUpdatePinger.PingResult pingResult = WeblogUpdatePinger.sendPing(getPingTarget(), getActionWeblog());
                     if (pingResult.isError()) {
                         log.debug("Ping Result: " + pingResult);
-                        if (pingResult.getMessage() != null && pingResult.getMessage().trim().length() > 0) {
+                        if (pingResult.getMessage() != null && !pingResult.getMessage().isBlank()) {
                             addError("ping.transmittedButError");
                             addError(pingResult.getMessage());
                         } else {
@@ -207,7 +211,7 @@ public class Pings extends UIAction {
         AutoPingManager autoPingMgr = WebloggerFactory.getWeblogger().getAutopingManager();
         
         // Build isEnabled map (keyed by ping target id and values Boolean.TRUE/Boolean.FALSE)
-        Map<String, Boolean> isEnabled = new HashMap<String, Boolean>();
+        Map<String, Boolean> isEnabled = new HashMap<>();
         
         List<AutoPing> autoPings = Collections.emptyList();
         try {
@@ -228,7 +232,7 @@ public class Pings extends UIAction {
             }
         }
 
-        if (isEnabled.size() > 0) {
+        if (!isEnabled.isEmpty()) {
             setPingStatus(isEnabled);
         }
     }

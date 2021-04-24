@@ -18,6 +18,7 @@
 
 package org.apache.roller.weblogger.ui.struts2.admin;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,13 +26,16 @@ import org.apache.roller.weblogger.config.AuthMethod;
 import org.apache.roller.weblogger.config.WebloggerConfig;
 import org.apache.roller.weblogger.pojos.GlobalPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 
 
 /**
  * Action which displays user admin search page.
  */
+// TODO: make this work @AllowedMethods({"execute"})
 public class UserAdmin extends UIAction {
-    
+    private CreateUserBean bean = new CreateUserBean();
+
     public UserAdmin() {
         this.actionName = "userAdmin";
         this.desiredMenu = "admin";
@@ -40,25 +44,37 @@ public class UserAdmin extends UIAction {
 
     private AuthMethod authMethod = WebloggerConfig.getAuthMethod();
 
-    // admin role required    
+    // admin role required
+    @Override
     public List<String> requiredGlobalPermissionActions() {
         return Collections.singletonList(GlobalPermission.ADMIN);
     }
     
     // no weblog required
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
 
-    /**
-     * Show user admin search page.
-     */
+    // show user admin search page
+    @Override
     public String execute() {
         return SUCCESS;
+    }
+
+    public String edit() {
+        return "edit";
     }
 
     public String getAuthMethod() {
         return authMethod.name();
     }
 
+    public CreateUserBean getBean() {
+        return bean;
+    }
+
+    public void setBean(CreateUserBean bean) {
+        this.bean = bean;
+    }
 }

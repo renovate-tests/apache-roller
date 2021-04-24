@@ -28,7 +28,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -326,7 +326,7 @@ public class Utilities {
     /** Convert string with delimiters to string list.
      */
     public static List<String> stringToStringList(String instr, String delim) {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         String[] str = StringUtils.split(instr, delim);
         Collections.addAll(stringList, str);
         return stringList;

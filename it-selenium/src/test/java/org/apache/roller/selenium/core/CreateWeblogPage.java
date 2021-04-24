@@ -20,8 +20,6 @@ package org.apache.roller.selenium.core;
 import org.apache.roller.selenium.AbstractRollerPage;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * represents core/CreateWeblog.jsp
  */
@@ -31,8 +29,8 @@ public class CreateWeblogPage extends AbstractRollerPage {
 
     public CreateWeblogPage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "Create Weblog Page";
-        verifyPageTitle("Front Page: Create Weblog");
+        String pageTitle = "Front Page: Create Weblog";
+        verifyPageTitle("createWeblog", pageTitle);
     }
 
     public MainMenuPage createWeblog() {
@@ -44,6 +42,7 @@ public class CreateWeblogPage extends AbstractRollerPage {
         setName(name);
         setHandle(handle);
         setEmail(email);
+        setLocale("English");
         return createWeblog();
     }
 
@@ -61,6 +60,10 @@ public class CreateWeblogPage extends AbstractRollerPage {
 
     public void setEmail(String value) {
         setFieldValue("createWeblog_bean_emailAddress", value);
+    }
+
+    public void setLocale(String value) {
+        selectOptionByVisibleText("createWeblog_bean_locale", value);
     }
 
 }

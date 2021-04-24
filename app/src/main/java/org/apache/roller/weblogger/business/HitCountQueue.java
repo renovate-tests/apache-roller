@@ -94,7 +94,7 @@ public final class HitCountQueue {
     
     
     public List<String> getHits() {
-        return new ArrayList<String>(this.queue);
+        return new ArrayList<>(this.queue);
     }
     
     
@@ -114,6 +114,11 @@ public final class HitCountQueue {
         if(this.worker != null) {
             log.info("stopping worker "+this.worker.getName());
             worker.interrupt();
+            try {
+                worker.join(RollerConstants.GRACEFUL_SHUTDOWN_WAIT_IN_MILLISECONDS);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage(), e);
+            }
         }
         
     }

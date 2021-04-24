@@ -22,19 +22,14 @@
        <s:param value="actionWeblog.handle" />
    </s:text>
 </p>  
-<p class="pagetip">
-    <s:text name="pings.explanation"/>
-<p/>
+<p class="pagetip"> <s:text name="pings.explanation"/> </p>
 
-<p/>
-<h2><s:text name="pings.commonPingTargets"/></h2>
-<p/>
+<p> <h2><s:text name="pings.commonPingTargets"/></h2> </p>
 
-<p/>
-<s:text name="pings.commonPingTargetsExplanation"/>
-<p/>
+<p> <s:text name="pings.commonPingTargetsExplanation"/> </p>
 
-<table class="rollertable">
+
+<table class="rollertable table table-striped">
 <%-- Headings --%>
 <tr class="rollertable">
     <th class="rollertable" width="20%"><s:text name="generic.name" /></th>
@@ -44,7 +39,7 @@
 </tr>
 
 <%-- Table of current common targets with actions --%>
-<s:iterator id="pingTarget" value="commonPingTargets" status="rowstatus">
+<s:iterator var="pingTarget" value="commonPingTargets" status="rowstatus">
     <s:if test="#rowstatus.odd == true">
         <tr class="rollertable_odd">
     </s:if>

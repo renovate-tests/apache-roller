@@ -17,14 +17,7 @@
  */
 package org.apache.roller.selenium;
 
-import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
-import org.junit.*;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.apache.roller.selenium.core.CreateWeblogPage;
 import org.apache.roller.selenium.core.LoginPage;
 import org.apache.roller.selenium.core.MainMenuPage;
@@ -35,6 +28,20 @@ import org.apache.roller.selenium.editor.EntryAddPage;
 import org.apache.roller.selenium.editor.EntryEditPage;
 import org.apache.roller.selenium.view.BlogHomePage;
 import org.apache.roller.selenium.view.SingleBlogEntryPage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class InitialLoginTestIT {
     private WebDriver driver;
@@ -44,9 +51,17 @@ public class InitialLoginTestIT {
 
     @Before
     public void setUp() throws Exception {
-        driver = new FirefoxDriver();
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("intl.accept_languages", "en_US");
+        
+        FirefoxOptions options = new FirefoxOptions();
+        options.setProfile(profile);
+        
+        driver = new FirefoxDriver(options);
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS)
+                                  .pageLoadTimeout(5, TimeUnit.SECONDS)
+                                  .setScriptTimeout(5, TimeUnit.SECONDS);
         baseUrl = "http://localhost:8080/roller/";
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     @Test
@@ -56,13 +71,17 @@ public class InitialLoginTestIT {
         SetupPage sp = new SetupPage(driver);
         RegisterPage rp = sp.createNewUser();
         WelcomePage wp = rp.submitUserRegistration("bsmith", "Bob Smith", "bsmith@email.com", "roller123");
+        
         LoginPage lp = wp.doRollerLogin();
         MainMenuPage mmp = lp.loginToRoller("bsmith", "roller123");
+        
         CreateWeblogPage cwp = mmp.createWeblog();
-        mmp = cwp.createWeblog("Bob's Blog", "bobsblog", "bsmith@email.com");
+        cwp.createWeblog("Bob's Blog", "bobsblog", "bsmith@email.com");
 
         // set bobsblog as the front page blog
         driver.get(baseUrl);
+        sp = new SetupPage(driver);
+        driver.navigate().refresh();
         BlogHomePage bhp = sp.chooseFrontPageBlog();
 
         // create and read first blog entry
@@ -72,6 +91,7 @@ public class InitialLoginTestIT {
         eap.setTitle(blogEntryTitle);
         eap.setText(blogEntryContent);
         EntryEditPage eep = eap.postBlogEntry();
+        
         SingleBlogEntryPage sbep = eep.viewBlogEntry();
         System.out.println("title/text: " + sbep.getBlogTitle() + " / " + sbep.getBlogText());
         assertEquals(blogEntryTitle, sbep.getBlogTitle());
@@ -81,7 +101,6 @@ public class InitialLoginTestIT {
 
     @After
     public void tearDown() throws Exception {
-        driver.quit();
         String verificationErrorString = verificationErrors.toString();
         if (!"".equals(verificationErrorString)) {
             fail(verificationErrorString);

@@ -20,8 +20,6 @@ package org.apache.roller.selenium.editor;
 import org.apache.roller.selenium.view.SingleBlogEntryPage;
 import org.openqa.selenium.WebDriver;
 
-import java.lang.String;
-
 /**
  * represents editor/EntryEditPage.jsp
  * Page for editing an already saved (draft or posted) blog entry
@@ -32,8 +30,7 @@ public class EntryEditPage extends AbstractEntryPage {
 
     public EntryEditPage(WebDriver driver) {
         this.driver = driver;
-        this.pageName = "blog entry edit page";
-        verifyPageTitle("Front Page: Edit Entry");
+        verifyPageTitle("messages", "Front Page: Edit Entry");
     }
 
     public SingleBlogEntryPage viewBlogEntry() {

@@ -47,7 +47,7 @@ public class PlanetGroup implements Serializable, Comparable<PlanetGroup> {
     
     // associations
     private Planet planet = null;
-    private Set<Subscription> subscriptions = new TreeSet<Subscription>();
+    private Set<Subscription> subscriptions = new TreeSet<>();
     
     
     public PlanetGroup() {}
@@ -62,6 +62,7 @@ public class PlanetGroup implements Serializable, Comparable<PlanetGroup> {
     /**
      * For comparing groups and sorting, ordered by Title.
      */
+    @Override
     public int compareTo(PlanetGroup other) {
         return getTitle().compareTo(other.getTitle());
     }

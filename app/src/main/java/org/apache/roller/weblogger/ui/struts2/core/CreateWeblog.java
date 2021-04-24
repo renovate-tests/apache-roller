@@ -33,6 +33,7 @@ import org.apache.roller.weblogger.pojos.Weblog;
 import org.apache.roller.weblogger.pojos.WeblogPermission;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.Utilities;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * Allows user to create a new website.
  */
+// TODO: make this work @AllowedMethods({"execute","save"})
 public class CreateWeblog extends UIAction {
     
     private static Log log = LogFactory.getLog(CreateWeblog.class);
@@ -55,12 +57,14 @@ public class CreateWeblog extends UIAction {
     
     
     // override default security, we do not require an action weblog
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
     
     
     @SkipValidation
+    @Override
     public String execute() {
 
         // check if blog administrator has enabled creation of new blogs
@@ -75,7 +79,7 @@ public class CreateWeblog extends UIAction {
             if (!WebloggerConfig.getBooleanProperty("groupblogging.enabled")) {
                 UserManager mgr = WebloggerFactory.getWeblogger().getUserManager();
                 List<WeblogPermission> permissions = mgr.getWeblogPermissions(user);
-                if (permissions.size() > 0) {
+                if (!permissions.isEmpty()) {
                     // sneaky user trying to get around 1 blog limit that applies
                     // only when group blogging is disabled
                     addError("createWebsite.oneBlogLimit");
@@ -104,7 +108,7 @@ public class CreateWeblog extends UIAction {
             if (!WebloggerConfig.getBooleanProperty("groupblogging.enabled")) {
                 UserManager mgr = WebloggerFactory.getWeblogger().getUserManager();
                 List<WeblogPermission> permissions = mgr.getWeblogPermissions(user);
-                if (permissions.size() > 0) {
+                if (!permissions.isEmpty()) {
                     // sneaky user trying to get around 1 blog limit that applies
                     // only when group blogging is disabled
                     addError("createWebsite.oneBlogLimit");
@@ -159,7 +163,7 @@ public class CreateWeblog extends UIAction {
     public void myValidate()  {
         
         String allowed = WebloggerConfig.getProperty("username.allowedChars");
-        if(allowed == null || allowed.trim().length() == 0) {
+        if(allowed == null || allowed.isBlank()) {
             allowed = Register.DEFAULT_ALLOWED_CHARS;
         }
         

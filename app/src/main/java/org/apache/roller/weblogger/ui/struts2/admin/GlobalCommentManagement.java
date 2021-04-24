@@ -41,12 +41,14 @@ import org.apache.roller.weblogger.ui.struts2.util.KeyValueObject;
 import org.apache.roller.weblogger.util.cache.CacheManager;
 import org.apache.roller.weblogger.ui.struts2.util.UIAction;
 import org.apache.roller.weblogger.util.Utilities;
+import org.apache.struts2.convention.annotation.AllowedMethods;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 
 /**
  * Action for managing global set of comments.
  */
+// TODO: make this work @AllowedMethods({"query","delete","update"})
 public class GlobalCommentManagement extends UIAction implements ServletRequestAware {
     
     private static Log log = LogFactory.getLog(GlobalCommentManagement.class);
@@ -83,11 +85,13 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
     
     
     // admin role required
+    @Override
     public List<String> requiredGlobalPermissionActions() {
         return Collections.singletonList(GlobalPermission.ADMIN);
     }
     
     // no weblog required
+    @Override
     public boolean isWeblogRequired() {
         return false;
     }
@@ -110,10 +114,10 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
             csc.setMaxResults(COUNT+1);
 
             List<WeblogEntryComment> rawComments = wmgr.getComments(csc);
-            comments = new ArrayList<WeblogEntryComment>();
+            comments = new ArrayList<>();
             comments.addAll(rawComments);   
             
-            if(comments.size() > 0) {
+            if(!comments.isEmpty()) {
                 if(comments.size() > COUNT) {
                     comments.remove(comments.size()-1);
                     hasMore = true;
@@ -136,7 +140,7 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
     // use the action data to build a url representing this action, including query data
     private String buildBaseUrl() {
         
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         
         if(!StringUtils.isEmpty(getBean().getSearchString())) {
             params.put("bean.searchString", getBean().getSearchString());
@@ -157,6 +161,7 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
     
     
     // show comment management page
+    @Override
     public String execute() {
         
         // load list of comments from query
@@ -247,11 +252,11 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
         try {
             WeblogEntryManager wmgr = WebloggerFactory.getWeblogger().getWeblogEntryManager();
             
-            List<Weblog> flushList = new ArrayList<Weblog>();
+            List<Weblog> flushList = new ArrayList<>();
             
             // delete all comments with delete box checked
             List<String> deletes = Arrays.asList(getBean().getDeleteComments());
-            if (deletes.size() > 0) {
+            if (!deletes.isEmpty()) {
                 log.debug("Processing deletes - "+deletes.size());
                 
                 WeblogEntryComment deleteComment;
@@ -323,7 +328,7 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
     
     public List<KeyValueObject> getCommentStatusOptions() {
         
-        List<KeyValueObject> opts = new ArrayList<KeyValueObject>();
+        List<KeyValueObject> opts = new ArrayList<>();
         
         opts.add(new KeyValueObject("ALL", getText("generic.all")));
         opts.add(new KeyValueObject("ONLY_PENDING", getText("commentManagement.onlyPending")));
@@ -373,6 +378,7 @@ public class GlobalCommentManagement extends UIAction implements ServletRequestA
         this.pager = pager;
     }
 
+    @Override
     public void setServletRequest(HttpServletRequest req) {
         httpMethod = req.getMethod();
     }

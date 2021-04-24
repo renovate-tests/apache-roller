@@ -192,7 +192,7 @@ public class EntryCollection {
             link.setType("text/html");
             feed.setAlternateLinks(Collections.singletonList(link));
 
-            List<Entry> atomEntries = new ArrayList<Entry>();
+            List<Entry> atomEntries = new ArrayList<>();
             int count = 0;
             for (WeblogEntry rollerEntry : entries) {
                 if (count++ >= MAX_ENTRIES) {
@@ -205,7 +205,7 @@ public class EntryCollection {
                     feed.setUpdated(entry.getUpdated());
                 }
             }
-            List<Link> links = new ArrayList<Link>();
+            List<Link> links = new ArrayList<>();
             if (entries.size() > max) {
                 // add next link
                 int nextOffset = start + max;
@@ -226,7 +226,7 @@ public class EntryCollection {
                 prevLink.setHref(url);
                 links.add(prevLink);
             }
-            if (links.size() > 0) {
+            if (!links.isEmpty()) {
                 feed.setOtherLinks(links);
             }
             // Use collection URI as id
@@ -323,7 +323,7 @@ public class EntryCollection {
         Content content = new Content();
         content.setType(Content.HTML);
         content.setValue(entry.getText());
-        List<Content> contents = new ArrayList<Content>();
+        List<Content> contents = new ArrayList<>();
         contents.add(content);
         
         atomEntry.setContents(contents);
@@ -342,14 +342,14 @@ public class EntryCollection {
         atomEntry.setAuthors(   (List<SyndPerson>)Collections.singletonList(author));
         
         // Add Atom category for Weblogger category, using category scheme
-        List<Category> categories = new ArrayList<Category>();
+        List<Category> categories = new ArrayList<>();
         Category atomCat = new Category();
         atomCat.setScheme(RollerAtomService.getWeblogCategoryScheme(entry.getWebsite()));
         atomCat.setTerm(entry.getCategory().getName());
         categories.add(atomCat);
         
         // Add Atom categories for each Weblogger tag with null scheme
-        Set<WeblogEntryTag> tmp = new TreeSet<WeblogEntryTag>(new WeblogEntryTagComparator());
+        Set<WeblogEntryTag> tmp = new TreeSet<>(new WeblogEntryTagComparator());
         tmp.addAll(entry.getTags());
         for (WeblogEntryTag tag : tmp) {
             Category newcat = new Category();
@@ -361,7 +361,7 @@ public class EntryCollection {
         Link altlink = new Link();
         altlink.setRel("alternate");
         altlink.setHref(entry.getPermalink());
-        List<Link> altlinks = new ArrayList<Link>();
+        List<Link> altlinks = new ArrayList<>();
         altlinks.add(altlink);
         atomEntry.setAlternateLinks(altlinks);
         
@@ -370,11 +370,11 @@ public class EntryCollection {
         editlink.setHref(
                 atomURL
                 +"/"+entry.getWebsite().getHandle() + "/entry/" + entry.getId());
-        List<Link> otherlinks = new ArrayList<Link>();
+        List<Link> otherlinks = new ArrayList<>();
         otherlinks.add(editlink);
         atomEntry.setOtherLinks(otherlinks);
         
-        List<Module> modules = new ArrayList<Module>();
+        List<Module> modules = new ArrayList<>();
         AppModule app = new AppModuleImpl();
         app.setDraft(!WeblogEntry.PubStatus.PUBLISHED.equals(entry.getStatus()));
         app.setEdited(entry.getUpdateTime());
@@ -399,7 +399,7 @@ public class EntryCollection {
             updateTime = new Timestamp( entry.getUpdated().getTime() );
         }
         rollerEntry.setTitle(entry.getTitle());
-        if (entry.getContents() != null && entry.getContents().size() > 0) {
+        if (entry.getContents() != null && !entry.getContents().isEmpty()) {
             Content content = entry.getContents().get(0);
             rollerEntry.setText(content.getValue());
         }
@@ -422,7 +422,7 @@ public class EntryCollection {
         // Atom supports multiple cats, but Weblogger supports one/entry
         // so here we take accept the first category that exists.
         List<Category> categories = entry.getCategories();
-        if (categories != null && categories.size() > 0) {
+        if (categories != null && !categories.isEmpty()) {
             for (Category cat : categories) {
                 if (cat.getScheme() != null && cat.getScheme().equals(
                         RollerAtomService.getWeblogCategoryScheme(rollerEntry.getWebsite()))) {
@@ -449,7 +449,7 @@ public class EntryCollection {
         // Atom categories with no scheme are considered tags.
         String tags = "";
         StringBuilder buff = new StringBuilder();
-        if (categories != null && categories.size() > 0) {
+        if (categories != null && !categories.isEmpty()) {
             for (Category cat : categories) {
                 if (cat.getScheme() == null) {
                     buff.append(" ").append(cat.getTerm());
