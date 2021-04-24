@@ -17,8 +17,19 @@
     "enableRenovate": true,
     "dependencyDashboard": true,
     "extends": [
-      "config:base",
-      "github>whitesource/merge-confidence:beta"
+      "github>whitesource/merge-confidence:beta",
+      ":separateMajorReleases",
+      ":combinePatchMinorReleases",
+      ":ignoreUnstable",
+      ":prImmediately",
+      ":semanticPrefixFixDepsChoreOthers",
+      ":updateNotScheduled",
+      ":automergeDisabled",
+      ":ignoreModulesAndTests",
+      ":autodetectPinVersions",
+      "group:monorepos",
+      "group:recommended",
+      "workarounds:all"
       ]   
   }
 }
