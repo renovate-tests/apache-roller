@@ -1,0 +1,19 @@
+name: Whitesource Prioritize Java with Maven
+
+on:
+  pull_request:
+
+jobs:
+  quick-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+    - name: Build with Maven
+      run: mvn clean install
