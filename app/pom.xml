@@ -50,7 +50,7 @@ limitations under the License.
         <log4j2.version>2.14.1</log4j2.version>
         <lucene.version>8.8.1</lucene.version>
         <oauth-core.version>20100527</oauth-core.version>
-        <maven-war.version>3.2.3</maven-war.version>
+        <maven-war.version>3.3.1</maven-war.version>
         <maven-surefire.version>2.22.2</maven-surefire.version>
         <maven-antrun.version>1.0b3</maven-antrun.version>
         <rome.version>1.15.0</rome.version>
@@ -675,7 +675,7 @@ limitations under the License.
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
 
                 <executions>
 
