@@ -1,0 +1,29 @@
+{
+  "extends": ["config:base"],
+      "packageRules": [
+    {
+        "groupName": "Maven Test scope",
+        "groupSlug": "testscope",
+        "matchManagers": ["maven"],
+        "matchDepTypes": ["test"]
+  
+    },
+    {
+        "groupName": "High Confidence",
+        "groupSlug": "highconf",
+        "matchPackagePrefixes": [
+          "org.webjars:",
+          "org.eclipse.jetty:",
+          "org.asciidocter:"
+        ]
+    },
+    {
+      "groupName": "Maven Plugins",
+      "groupSlug": "mvnplugins",
+      "matchPackagePrefixes": [
+        "org.apache.maven.plugins:"
+      ]
+  }
+
+    ]
+}
