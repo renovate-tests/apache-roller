@@ -45,7 +45,7 @@ limitations under the License.
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <eclipse-link.version>2.7.8</eclipse-link.version>
+        <eclipse-link.version>3.0.0</eclipse-link.version>
         <guice.version>5.0.1</guice.version>
         <log4j2.version>2.14.1</log4j2.version>
         <lucene.version>8.8.1</lucene.version>
