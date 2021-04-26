@@ -48,7 +48,7 @@ limitations under the License.
         <eclipse-link.version>2.7.8</eclipse-link.version>
         <guice.version>5.0.1</guice.version>
         <log4j2.version>2.14.1</log4j2.version>
-        <lucene.version>8.8.1</lucene.version>
+        <lucene.version>8.8.2</lucene.version>
         <oauth-core.version>20100527</oauth-core.version>
         <maven-war.version>3.2.3</maven-war.version>
         <maven-surefire.version>2.22.2</maven-surefire.version>
