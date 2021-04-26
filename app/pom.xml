@@ -280,7 +280,7 @@ limitations under the License.
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>summernote</artifactId>
-            <version>0.8.12</version>
+            <version>0.8.16</version>
         </dependency>
 
         <dependency>
